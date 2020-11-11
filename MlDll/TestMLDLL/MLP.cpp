@@ -113,19 +113,19 @@ void MLP::forwardPass(vector<double> _inputs, bool isClassification) {
 		inputs[0][j + 1] = _inputs[j];
 	}
 
-	for (int i = 1; i < nbLayers + 1; ++i) {
-		for (int j = 0; j < neuronsPerLayer[i] + 1; ++j) {
+	for (int l = 1; l < nbLayers + 1; ++l) {
+		for (int j = 0; j < neuronsPerLayer[l] + 1; ++j) {
 			double sum = 0.0;
 
-			for (int k = 0; k < neuronsPerLayer[i - 1] + 1; ++k) {
-				sum += inputs[i - 1][k] * weights[i - 1][k][j];
+			for (int i = 0; i < neuronsPerLayer[l - 1] + 1; ++i) {
+				sum += inputs[l - 1][i] * weights[l - 1][i][j];
+			}
 
-				if (i == nbLayers && !isClassification) {
-					inputs[i][j] = sum;
-				}
-				else {
-					inputs[i][j] = tanh(sum);
-				}
+			if (l == nbLayers && !isClassification) {
+				inputs[l][j] = sum;
+			}
+			else {
+				inputs[l][j] = tanh(sum);
 			}
 		}
 	}
@@ -138,16 +138,24 @@ void MLP::train(double allInputs[], double allExpectedOutputs[], int sampleCount
 	vector<double> x_k;
 	vector<double> y_k;
 
+	srand(time(NULL));
+
 	for (int it = 0; it < epochs; ++it) {
 		int k = rand() % sampleCount;
 
 		x_k.clear();
 		y_k.clear();
 
-		x_k.push_back(allInputs[inputsSize * k]);
-		x_k.push_back(allInputs[inputsSize * (k + 1)]);
-		y_k.push_back(allExpectedOutputs[outputsSize * k]);
-		y_k.push_back(allExpectedOutputs[outputsSize * (k + 1)]);
+		x_k.resize(inputsSize);
+		y_k.resize(outputsSize);
+
+		for (int i = 0; i < inputsSize; ++i) {
+			x_k.push_back(allInputs[inputsSize * k + i]);
+		}
+
+		for (int i = 0; i < outputsSize; ++i) {
+			y_k.push_back(allExpectedOutputs[outputsSize * k + i]);
+		}
 
 		forwardPass(x_k, isClassification);
 
@@ -155,7 +163,7 @@ void MLP::train(double allInputs[], double allExpectedOutputs[], int sampleCount
 			deltas[nbLayers][j] = inputs[nbLayers][j] - y_k[j - 1];
 
 			if (isClassification) {
-				deltas[nbLayers][j] *= 1 - pow(inputs[nbLayers][j], 2);
+				deltas[nbLayers][j] *= (1 - pow(inputs[nbLayers][j], 2));
 			}
 		}
 
@@ -163,7 +171,7 @@ void MLP::train(double allInputs[], double allExpectedOutputs[], int sampleCount
 			for (int i = 0; i < neuronsPerLayer[l - 1] + 1; ++i) {
 				double sum = 0.0;
 
-				for (int j = 0; j < neuronsPerLayer[nbLayers]; ++j) {
+				for (int j = 1; j < neuronsPerLayer[l]; ++j) {
 					sum += weights[l - 1][i][j] * deltas[l][j];
 				}
 
@@ -173,7 +181,7 @@ void MLP::train(double allInputs[], double allExpectedOutputs[], int sampleCount
 
 		for (int l = 1; l < nbLayers + 1; ++l) {
 			for (int i = 0; i < neuronsPerLayer[l - 1] + 1; ++i) {
-				for (int j = 0; j < neuronsPerLayer[l]; ++j) {
+				for (int j = 1; j < neuronsPerLayer[l]; ++j) {
 					weights[l - 1][i][j] -= learningRate * inputs[l - 1][i] * deltas[l][j];
 				}
 			}
