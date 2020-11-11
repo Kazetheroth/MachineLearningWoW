@@ -145,17 +145,22 @@ void MLP::train(double allInputs[], double allExpectedOutputs[], int sampleCount
 
 		x_k.clear();
 		y_k.clear();
-
 		x_k.resize(inputsSize);
 		y_k.resize(outputsSize);
 
+		/*x_k.push_back(allInputs[inputsSize * k]);
+		x_k.push_back(allInputs[inputsSize * (k + 1)]);
+
+		y_k.push_back(allExpectedOutputs[outputsSize * k]);
+		y_k.push_back(allExpectedOutputs[outputsSize * (k + 1)]);
+		*/
 		for (int i = 0; i < inputsSize; ++i) {
-			x_k.push_back(allInputs[inputsSize * k + i]);
+			x_k[i] = (allInputs[inputsSize * k + i]);
 		}
 
 		for (int i = 0; i < outputsSize; ++i) {
-			y_k.push_back(allExpectedOutputs[outputsSize * k + i]);
-		}
+			y_k[i] = (allExpectedOutputs[outputsSize * k + i]);
+		} 
 
 		forwardPass(x_k, isClassification);
 
