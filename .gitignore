@@ -2,3 +2,17 @@
 MlDll/.idea/
 
 MlDll/MlDll/.idea/
+
+MlDll/.vs/
+
+MlDll/DeuxiemeProjet/x64/
+MlDll/Texture2D
+
+MlDll/x64/Debug/*.pdb
+MlDll/x64/Debug/*.ilk
+MlDll/x64/Debug/*.exe
+MlDll/x64/
+
+MlDll/MlDll/x64/
+
+MlDll/TestMLDLL/x64/

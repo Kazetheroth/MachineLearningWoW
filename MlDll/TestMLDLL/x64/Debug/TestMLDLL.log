@@ -1,1 +1,10 @@
-﻿
+﻿  MLP.cpp
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\TestMLDLL\MLP.cpp(55,12): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\TestMLDLL\MLP.cpp(195,41): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\TestMLDLL\MLP.cpp(202,28): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\TestMLDLL\MLP.cpp(206,32): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\TestMLDLL\MLP.cpp(210,36): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+  TestMLDLL.cpp
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\TestMLDLL\TestMLDLL.cpp(6,10): warning C4067: jetons inattendus après la directive du préprocesseur - saut de ligne attendu
+  Génération de code en cours...
+  TestMLDLL.vcxproj -> D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\x64\Debug\TestMLDLL.exe
