@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Games.Global.Weapons
@@ -33,20 +34,36 @@ namespace Games.Global.Weapons
 		{
 			Debug.Log("Awake pool object");
 
-			ClearChild();
+			InitPooler();			
+		}
+
+		private void Update()
+		{
+			if (!Application.isPlaying)
+			{
+				if (pooledObjectsList == null)
+				{
+					InitPooler();
+				}
+			}
+		}
+
+		private void InitPooler()
+		{
+			Debug.Log("Init pool object");
 			
+			ClearChild();
+
 			SharedInstance = this;
 
 			pooledObjectsList = new List<List<GameObject>>();
 			pooledObjects = new List<GameObject>();
 			positions = new List<int>();
 
-
 			for (int i = 0; i < itemsToPool.Count; i++)
 			{
 				ObjectPoolItemToPooledObject(i);
 			}
-
 		}
 
 		private void ClearChild()

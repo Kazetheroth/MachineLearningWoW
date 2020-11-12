@@ -15,6 +15,11 @@ namespace DefaultNamespace
             {
                 mlc.RunMachineLearningTestCase();
             }
+
+            if (GUILayout.Button("Clear la scene"))
+            {
+                mlc.ResetSphere();
+            }
         }
     }
 }

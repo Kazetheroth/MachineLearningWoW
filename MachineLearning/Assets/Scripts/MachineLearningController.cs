@@ -35,7 +35,7 @@ public class MachineLearningController : MonoBehaviour
         }
     }
 
-    private void ResetSphere()
+    public void ResetSphere()
     {
         foreach (GameObject activateGameObject in activateGameObjects)
         {
