@@ -17,8 +17,10 @@ public:
 	void train(double allInputs[], double allExpectedOutputs[], int sampleCount, bool isClassification, int epochs, double learningRate);
 	void forwardPass(vector<double> _inputs, bool isClassification);
 
-	void displayInputs();
+	double getAndDisplayInput();
 	void displayWeights();
+
+	void testChangeInput();
 
 private:
 	int* neuronsPerLayer;

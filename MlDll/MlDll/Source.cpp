@@ -2,8 +2,12 @@
 #include <math.h>       /* tanh, log */
 #include <cstdlib>
 
+#include "Utils.h"
+#include "MLP.h"
 
 extern "C" {
+
+	/* ====================== LINEAR ====================== */
 	__declspec(dllexport) double* create_linear_model(int inputs_count) {
 		auto weights = new double[inputs_count + 1];
 		for (auto i = 0; i < inputs_count + 1; i++) {
@@ -51,5 +55,27 @@ extern "C" {
 
 	__declspec(dllexport) double my_add(double a, double b) {
 		return a + b + 2;
+	}
+
+	/* ====================== MLP ====================== */
+	__declspec(dllexport) double* train_mlp_model(int* neuronsPerLayer, int nplSize, double* X, double* Y, int sampleSize, int epochs, double learningRate, bool isClassification) {
+		MLP* mlp = new MLP(neuronsPerLayer, nplSize);
+		double* result = new double[sampleSize];
+
+		cout << "BEFORE TRAINING" << endl;
+		for (int k = 0; k < sampleSize; ++k) {
+			mlp->forwardPass(Utils::createVector(X, k * 2, 2 * (k + 1)), isClassification);
+			mlp->getAndDisplayInput();
+		}
+
+		mlp->train(X, Y, sampleSize, isClassification, epochs, learningRate);
+
+		cout << "AFTER TRAINING" << endl;
+		for (int k = 0; k < sampleSize; ++k) {
+			mlp->forwardPass(Utils::createVector(X, k * 2, 2 * (k + 1)), isClassification);
+			result[k] = mlp->getAndDisplayInput();
+		}
+
+		return result;
 	}
 }

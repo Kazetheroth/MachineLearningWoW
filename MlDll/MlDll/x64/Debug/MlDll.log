@@ -1,3 +1,11 @@
-﻿  Source.cpp
-     Création de la bibliothèque D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\x64\Debug\MlDll.lib et de l'objet D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\x64\Debug\MlDll.exp
+﻿  MLP.cpp
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\MLP.cpp(10,12): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\MLP.cpp(96,12): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\MLP.cpp(147,41): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\MLP.cpp(156,28): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\MLP.cpp(160,32): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\MLP.cpp(164,36): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+  Source.cpp
+D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\Utils.h(12,2): warning C4091: 'static ' : ignoré à gauche de 'Utils' quand aucune variable n'est déclarée
+  Génération de code en cours...
   MlDll.vcxproj -> D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\x64\Debug\MlDll.dll

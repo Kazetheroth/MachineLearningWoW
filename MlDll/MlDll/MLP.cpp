@@ -1,50 +1,5 @@
 #include "MLP.h"
 
-//MLP::MLP(int* _neuronsPerLayer, int _neuronsPerLayerSize) {
-//	
-//	neuronsPerLayer = _neuronsPerLayer;
-//	nbLayers = _neuronsPerLayerSize;
-//
-//	int nbWeight = getNbWeights();
-//	int nbInput = getNbInputs();
-//
-//	weights = new double[nbWeight + 1];
-//	for (auto i = 0; i < nbWeight + 1; ++i) {
-//		weights[i] = rand() / (double)RAND_MAX * 2.0 - 1.0;
-//	}
-//
-//	inputs = new double[nbInput + 1];
-//	deltas = new double[nbInput + 1]; 
-//
-//	for (int i = 0; i < nbLayers; ++i) {
-//		for (int j = 0; j < neuronsPerLayer[i]; ++j) {
-//			int currentIndex = j;
-//			
-//			if (i != 0) {
-//				currentIndex = (i * neuronsPerLayer[i - 1]) + j;
-//			}
-//			
-//			if (j == 0) {
-//				inputs[currentIndex] = 1.0;
-//				deltas[currentIndex] = 1.0;
-//			}
-//			else {
-//				inputs[currentIndex] = 0.0;
-//				deltas[currentIndex] = 0.0;
-//			}
-//		}
-//	}
-//
-//	for (auto i = 0; i < nbInput + 1; ++i) {
-//		if (i > 0) {
-//			inputs[i] = 0.0;
-//		}
-//		else {
-//			inputs[i] = 1.0;
-//		}
-//	}	
-//}
-
 MLP::MLP(int* _neuronsPerLayer, int _neuronsPerLayerSize) {
 	neuronsPerLayer = _neuronsPerLayer;
 	nbLayers = _neuronsPerLayerSize - 1;
@@ -148,19 +103,13 @@ void MLP::train(double allInputs[], double allExpectedOutputs[], int sampleCount
 		x_k.resize(inputsSize);
 		y_k.resize(outputsSize);
 
-		/*x_k.push_back(allInputs[inputsSize * k]);
-		x_k.push_back(allInputs[inputsSize * (k + 1)]);
-
-		y_k.push_back(allExpectedOutputs[outputsSize * k]);
-		y_k.push_back(allExpectedOutputs[outputsSize * (k + 1)]);
-		*/
 		for (int i = 0; i < inputsSize; ++i) {
 			x_k[i] = (allInputs[inputsSize * k + i]);
 		}
 
 		for (int i = 0; i < outputsSize; ++i) {
 			y_k[i] = (allExpectedOutputs[outputsSize * k + i]);
-		} 
+		}
 
 		forwardPass(x_k, isClassification);
 
@@ -194,21 +143,13 @@ void MLP::train(double allInputs[], double allExpectedOutputs[], int sampleCount
 	}
 }
 
-void MLP::displayInputs() {
-	/*int inputSize = inputs.size();
-
-	for (int i = 0; i < inputSize; ++i) {
-		int inputSizeSize = inputs[i].size();
-
-		for (int j = 0; j < inputSizeSize; ++j) {
-			cout << inputs[i][j] << endl;
-		}
-	}*/
-
+double MLP::getAndDisplayInput() {
 	int inputSize = inputs[nbLayers].size();
 	for (int i = 1; i < inputSize; ++i) {
 		cout << inputs[nbLayers][i] << endl;
 	}
+
+	return inputs[nbLayers][1];
 }
 
 void MLP::displayWeights() {
@@ -227,4 +168,8 @@ void MLP::displayWeights() {
 			}
 		}
 	}
+}
+
+void MLP::testChangeInput() {
+	inputs[nbLayers][1] = 259;
 }
