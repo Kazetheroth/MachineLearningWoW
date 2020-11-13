@@ -143,13 +143,19 @@ void MLP::train(double allInputs[], double allExpectedOutputs[], int sampleCount
 	}
 }
 
-double MLP::getAndDisplayInput() {
+void MLP::displayInput() {
 	int inputSize = inputs[nbLayers].size();
 	for (int i = 1; i < inputSize; ++i) {
 		cout << inputs[nbLayers][i] << endl;
 	}
+}
 
-	return inputs[nbLayers][1];
+void MLP::fillInputsResult(double* outputResult, int index) {
+	int inputSize = inputs[nbLayers].size();
+
+	for (int i = 1; i < inputSize; ++i) {
+		outputResult[(inputSize - 1) * index + (i - 1)] = inputs[nbLayers][i];
+	}
 }
 
 void MLP::displayWeights() {

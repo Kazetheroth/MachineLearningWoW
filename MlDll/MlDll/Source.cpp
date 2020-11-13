@@ -60,12 +60,12 @@ extern "C" {
 	/* ====================== MLP ====================== */
 	__declspec(dllexport) double* train_mlp_model(int* neuronsPerLayer, int nplSize, double* X, double* Y, int sampleSize, int epochs, double learningRate, bool isClassification) {
 		MLP* mlp = new MLP(neuronsPerLayer, nplSize);
-		double* result = new double[sampleSize];
+		double* result = new double[sampleSize * neuronsPerLayer[nplSize - 1]];
 
-		cout << "BEFORE TRAINING" << endl;
+		cout << "BEFORE TRAINING " << sampleSize * neuronsPerLayer[nplSize - 1] << endl;
 		for (int k = 0; k < sampleSize; ++k) {
 			mlp->forwardPass(Utils::createVector(X, k * 2, 2 * (k + 1)), isClassification);
-			mlp->getAndDisplayInput();
+			mlp->displayInput();
 		}
 
 		mlp->train(X, Y, sampleSize, isClassification, epochs, learningRate);
@@ -73,7 +73,7 @@ extern "C" {
 		cout << "AFTER TRAINING" << endl;
 		for (int k = 0; k < sampleSize; ++k) {
 			mlp->forwardPass(Utils::createVector(X, k * 2, 2 * (k + 1)), isClassification);
-			result[k] = mlp->getAndDisplayInput();
+			mlp->fillInputsResult(result, k);
 		}
 
 		return result;

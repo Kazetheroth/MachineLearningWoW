@@ -13,9 +13,10 @@ public class MachineLearningController : MonoBehaviour
     [SerializeField] private TestCaseOption testCaseOption;
     [SerializeField] private int epochs = 100000;
     [SerializeField] private double learningRate = 0.1;
-    [SerializeField] private bool isClassification = true;
 
     private List<GameObject> activateGameObjects;
+
+    private TestCaseParameters simulateTestCaseParameters;
 
     private void Update()
     {
@@ -37,8 +38,10 @@ public class MachineLearningController : MonoBehaviour
 
     public void RunMachineLearningTestCase()
     {
-        double[] resultXorTest = MachineLearningTestCase.RunMachineLearningTestCase(testCaseOption, epochs, learningRate, isClassification);
+        double[] resultXorTest = MachineLearningTestCase.RunMachineLearningTestCase(testCaseOption, epochs, learningRate, simulateTestCaseParameters);
 
+        simulateTestCaseParameters = null;
+        
         if (resultXorTest == null || resultXorTest.Length == 0)
         {
             Debug.Log("Doesn't work");
@@ -53,20 +56,28 @@ public class MachineLearningController : MonoBehaviour
         }
     }
 
-    public void InstantiateSpheresInScene(List<double> samples, int sampleSize)
+    public void SimulateResultTest()
+    {
+        simulateTestCaseParameters = MachineLearningTestCase.GetTestOption(testCaseOption);
+
+        InstantiateSpheresInScene(simulateTestCaseParameters.X, simulateTestCaseParameters.sampleSize, simulateTestCaseParameters.Y);
+    }
+
+    public void InstantiateSpheresInScene(List<double> samples, int sampleSize, List<double> expectedOutputSimulation)
     {
         ResetSphere();
 
         int allSample = samples.Count;
         int nbParametersInSample = allSample / sampleSize;
-        
-        Debug.Log(allSample);
-        Debug.Log(nbParametersInSample);
-        Debug.Log(sampleSize);
 
         for (int i = 0; i < allSample; i += nbParametersInSample)
         {
             PlaceSphere(samples[i], nbParametersInSample > 1 ? samples[i + 1] : 0, nbParametersInSample > 2 ? samples[i + 2] : 0);
+
+            if (expectedOutputSimulation != null)
+            {
+                ColorSphere(i / nbParametersInSample, expectedOutputSimulation[i / nbParametersInSample]);
+            }
         }
     }
 

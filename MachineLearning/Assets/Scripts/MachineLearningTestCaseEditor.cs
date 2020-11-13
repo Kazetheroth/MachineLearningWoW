@@ -20,6 +20,11 @@ namespace DefaultNamespace
             {
                 mlc.ResetSphere();
             }
+
+            if (GUILayout.Button("Simulate test"))
+            {
+                mlc.SimulateResultTest();
+            }
         }
     }
 }

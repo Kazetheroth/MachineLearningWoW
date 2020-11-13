@@ -124,12 +124,14 @@ void generateParameter(TestCaseOption testCaseOption) {
 
 int main() 
 {
-    generateParameter(LINEAR_SIMPLE_2D);
+    generateParameter(XOR);
 
     double* result = train_mlp_model(neuronsPerLayer, nplSize, X, Y, sampleSize, 100000, 0.1, isClassification);
 
     cout << "Resultat obtenu" << endl;
-    for (int i = 0; i < sampleSize; ++i) {
+
+    int nbResult = sampleSize * neuronsPerLayer[nplSize - 1];
+    for (int i = 0; i < nbResult; ++i) {
         cout << result[i] << endl;
     }
 }

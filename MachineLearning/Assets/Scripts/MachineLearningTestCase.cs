@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace DefaultNamespace
@@ -21,6 +22,7 @@ namespace DefaultNamespace
         public List<double> X;
         public List<double> Y;
         public int sampleSize;
+        public bool isClassification;
     }
 
     public static class MachineLearningTestCase
@@ -30,6 +32,8 @@ namespace DefaultNamespace
         public static TestCaseParameters GetTestOption(TestCaseOption testCaseOption)
         {
             TestCaseParameters testCaseParameters = null;
+            List<double> xArray;
+            List<double> yArray;
             
             switch (testCaseOption)
             {
@@ -40,26 +44,28 @@ namespace DefaultNamespace
                         nplSize = 2,
                         X = new List<double> {1, 1, 2, 3, 3, 3},
                         Y = new List<double> {1, -1, -1},
-                        sampleSize = 3
+                        sampleSize = 3,
+                        isClassification = true
                     };
                 case TestCaseOption.LINEAR_MULTIPLE:
-                    List<double> Xarray = new List<double>();
-                    List<double> Yarray = new List<double>();
+                    xArray = new List<double>();
+                    yArray = new List<double>();
 
                     for (int i = 0; i < 100; ++i)
                     {
-                        Xarray.Add(Random.Range(0.0f, 1.0f) + (i < 50 ? 1 : 2));
-                        Xarray.Add(Random.Range(0.0f, 1.0f) + (i < 50 ? 1 : 2));
-                        Yarray.Add(i < 50 ? 1 : -1);
+                        xArray.Add(Random.Range(0.0f, 1.0f) + (i < 50 ? 1 : 2));
+                        xArray.Add(Random.Range(0.0f, 1.0f) + (i < 50 ? 1 : 2));
+                        yArray.Add(i < 50 ? 1 : -1);
                     }
 
                     return new TestCaseParameters
                     {
                         neuronsPerLayer = new List<int> {2, 1},
                         nplSize = 2,
-                        X = Xarray,
-                        Y = Yarray,
-                        sampleSize = 100
+                        X = xArray,
+                        Y = yArray,
+                        sampleSize = 100,
+                        isClassification = true
                     };
                 case TestCaseOption.XOR:
                     return new TestCaseParameters
@@ -68,12 +74,29 @@ namespace DefaultNamespace
                         nplSize = 3,
                         X = new List<double> {0, 0, 0, 1, 1, 0, 1, 1},
                         Y = new List<double> {-1, 1, 1, -1},
-                        sampleSize = 4
+                        sampleSize = 4,
+                        isClassification = true
                     };
                 case TestCaseOption.CROSS:
+                    xArray = new List<double>();
+                    yArray = new List<double>();
+
+                    for (int i = 0; i < 500; ++i)
+                    {
+                        xArray.Add(Random.Range(-1.0f, 1.0f));
+                        xArray.Add(Random.Range(-1.0f, 1.0f));
+                        
+                        yArray.Add(Mathf.Abs((float)xArray[i * 2]) <= 0.3 || Mathf.Abs((float)xArray[i * 2 + 1]) <= 0.3 ? 1 : -1);
+                    }
+
                     return new TestCaseParameters
                     {
-
+                        neuronsPerLayer = new List<int> {2, 4, 1},
+                        nplSize = 3,
+                        X = xArray,
+                        Y = yArray,
+                        sampleSize = 500,
+                        isClassification = true
                     };
                 case TestCaseOption.MULTI_CROSS:
                     return new TestCaseParameters
@@ -85,16 +108,21 @@ namespace DefaultNamespace
             return testCaseParameters;
         }
 
-        public static double[] RunMachineLearningTestCase(TestCaseOption testCaseOption, int epochs, double learningRate, bool isClassification)
+        public static double[] RunMachineLearningTestCase(TestCaseOption testCaseOption, int epochs, double learningRate, TestCaseParameters simulateTestCaseParameters)
         {
-            TestCaseParameters testCaseParameters = GetTestOption(testCaseOption);
+            TestCaseParameters testCaseParameters = simulateTestCaseParameters ?? GetTestOption(testCaseOption);
 
+            if (simulateTestCaseParameters == null)
+            {
+                Debug.Log("Generate new test case");
+            }
+            
             if (testCaseParameters == null)
             {
                 return null;
             }
 
-            mlcInstance.InstantiateSpheresInScene(testCaseParameters.X, testCaseParameters.sampleSize);
+            mlcInstance.InstantiateSpheresInScene(testCaseParameters.X, testCaseParameters.sampleSize, null);
 
             double[] result = new double[testCaseParameters.sampleSize];
 
@@ -106,7 +134,7 @@ namespace DefaultNamespace
                 testCaseParameters.sampleSize,
                 epochs,
                 learningRate,
-                isClassification
+                testCaseParameters.isClassification
             );
             Marshal.Copy(rawResut, result, 0, testCaseParameters.sampleSize);
 

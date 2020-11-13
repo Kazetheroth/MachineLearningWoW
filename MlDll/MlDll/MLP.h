@@ -17,7 +17,8 @@ public:
 	void train(double allInputs[], double allExpectedOutputs[], int sampleCount, bool isClassification, int epochs, double learningRate);
 	void forwardPass(vector<double> _inputs, bool isClassification);
 
-	double getAndDisplayInput();
+	void displayInput();
+	void fillInputsResult(double* outputResult, int index);
 	void displayWeights();
 
 	void testChangeInput();
