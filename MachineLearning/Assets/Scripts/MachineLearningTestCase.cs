@@ -25,6 +25,8 @@ namespace DefaultNamespace
 
     public static class MachineLearningTestCase
     {
+        public static MachineLearningController mlcInstance;
+        
         public static TestCaseParameters GetTestOption(TestCaseOption testCaseOption)
         {
             TestCaseParameters testCaseParameters = null;
@@ -46,8 +48,8 @@ namespace DefaultNamespace
 
                     for (int i = 0; i < 100; ++i)
                     {
-                        Xarray.Add(Random.Range(0, 1) + (i < 50 ? 0 : 2));
-                        Xarray.Add(Random.Range(0, 1) + (i < 50 ? 0 : 2));
+                        Xarray.Add(Random.Range(0.0f, 1.0f) + (i < 50 ? 1 : 2));
+                        Xarray.Add(Random.Range(0.0f, 1.0f) + (i < 50 ? 1 : 2));
                         Yarray.Add(i < 50 ? 1 : -1);
                     }
 
@@ -91,7 +93,9 @@ namespace DefaultNamespace
             {
                 return null;
             }
-            
+
+            mlcInstance.InstantiateSpheresInScene(testCaseParameters.X, testCaseParameters.sampleSize);
+
             double[] result = new double[testCaseParameters.sampleSize];
 
             IntPtr rawResut = CppImporter.trainMLPModel(
@@ -105,7 +109,7 @@ namespace DefaultNamespace
                 isClassification
             );
             Marshal.Copy(rawResut, result, 0, testCaseParameters.sampleSize);
-  
+
             return result;
         }
     }

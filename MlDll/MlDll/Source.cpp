@@ -10,6 +10,8 @@ extern "C" {
 	/* ====================== LINEAR ====================== */
 	__declspec(dllexport) double* create_linear_model(int inputs_count) {
 		auto weights = new double[inputs_count + 1];
+		srand(time(NULL));
+
 		for (auto i = 0; i < inputs_count + 1; i++) {
 			weights[i] = rand() / (double)RAND_MAX * 2.0 - 1.0;
 		}
@@ -18,23 +20,21 @@ extern "C" {
 	}
 
 	__declspec(dllexport) double predict_linear_model_classification(double* model, double inputs[], int inputs_count) {
-		// TODO
-		double sum = 0.0;
-        for (int i = 0; i < inputs_count + 1; ++i) {
-            sum += inputs[i] * model[i];
+		double sum = model[0];
+        for (int i = 0; i < inputs_count; ++i) {
+            sum += inputs[i] * model[i + 1];
         }
 
-		return tanh(sum);
+		return sum < 0.5 ? -1 : 1;
 	}
 
     __declspec(dllexport) double predict_linear_model_regression(double* model, double inputs[], int inputs_count) {
-        // TODO
-        double sum = 0.0;
-        for (int i = 0; i < inputs_count; ++i) {
-            sum += inputs[i] * model[i];
-        }
+		double sum = model[0];
+		for (int i = 0; i < inputs_count; ++i) {
+			sum += inputs[i] * model[i + 1];
+		}
 
-        return sum;
+		return sum < 0.5 ? -1 : 1;
     }
 
 	__declspec(dllexport) double* predict_linear_model_multiclass_classification(double* model, double inputs[], int inputs_count,
