@@ -4,6 +4,7 @@ using DefaultNamespace;
 using Games.Global.Weapons;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class MachineLearningController : MonoBehaviour
 {
     [SerializeField] private ObjectPooler spherePooler;
@@ -13,7 +14,24 @@ public class MachineLearningController : MonoBehaviour
     [SerializeField] private double learningRate = 0.1;
     [SerializeField] private bool isClassification = true;
 
-    private List<GameObject> activateGameObjects = new List<GameObject>();
+    private List<GameObject> activateGameObjects;
+
+    private void Update()
+    {
+        if (!Application.isPlaying)
+        {
+            if (activateGameObjects == null)
+            {
+                InitMLController();
+            }
+        }
+    }
+
+    private void InitMLController()
+    {
+        Debug.Log("Init ML controller");
+        activateGameObjects = new List<GameObject>();
+    }
 
     public void RunMachineLearningTestCase()
     {
@@ -37,10 +55,17 @@ public class MachineLearningController : MonoBehaviour
 
     public void ResetSphere()
     {
+        if (activateGameObjects == null)
+        {
+            return;
+        }
+
         foreach (GameObject activateGameObject in activateGameObjects)
         {
             activateGameObject.SetActive(false);
         }
+        
+        activateGameObjects.Clear();
     }
 
     private void PlaceSphere(int index, double result)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace DefaultNamespace
 {
@@ -41,9 +41,23 @@ namespace DefaultNamespace
                         sampleSize = 3
                     };
                 case TestCaseOption.LINEAR_MULTIPLE:
+                    List<double> Xarray = new List<double>();
+                    List<double> Yarray = new List<double>();
+
+                    for (int i = 0; i < 100; ++i)
+                    {
+                        Xarray.Add(Random.Range(0, 1) + (i < 50 ? 0 : 2));
+                        Xarray.Add(Random.Range(0, 1) + (i < 50 ? 0 : 2));
+                        Yarray.Add(i < 50 ? 1 : -1);
+                    }
+
                     return new TestCaseParameters
                     {
-
+                        neuronsPerLayer = new List<int> {2, 1},
+                        nplSize = 2,
+                        X = Xarray,
+                        Y = Yarray,
+                        sampleSize = 100
                     };
                 case TestCaseOption.XOR:
                     return new TestCaseParameters
@@ -80,27 +94,18 @@ namespace DefaultNamespace
             
             double[] result = new double[testCaseParameters.sampleSize];
 
-            IntPtr ptrArrayNpl = Utils.ConvertIntListToPtr(testCaseParameters.neuronsPerLayer);
-            IntPtr ptrArrayX = Utils.ConvertDoubleListToPtr(testCaseParameters.X);
-            IntPtr ptrArrayY = Utils.ConvertDoubleListToPtr(testCaseParameters.Y);
-            
             IntPtr rawResut = CppImporter.trainMLPModel(
-                ptrArrayNpl,
+                testCaseParameters.neuronsPerLayer.ToArray(),
                 testCaseParameters.nplSize,
-                ptrArrayX,
-                ptrArrayY,
+                testCaseParameters.X.ToArray(),
+                testCaseParameters.Y.ToArray(),
                 testCaseParameters.sampleSize,
                 epochs,
                 learningRate,
                 isClassification
             );
-
             Marshal.Copy(rawResut, result, 0, testCaseParameters.sampleSize);
-
-            Marshal.FreeHGlobal(ptrArrayNpl);
-            Marshal.FreeHGlobal(ptrArrayX);
-            Marshal.FreeHGlobal(ptrArrayY);
-            
+  
             return result;
         }
     }
