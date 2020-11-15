@@ -36,7 +36,7 @@ extern "C" {
 			sum += inputs[i] * model[i + 1];
 		}
 
-		return Utils::sigmoid(sum);
+		return Utils::sigmoid(sum) < 0.5 ? -1 : 1;
     }
 
 	__declspec(dllexport) double* predict_linear_model_multiclass_classification(double* model, double inputs[], int inputs_count,

@@ -28,7 +28,8 @@ enum TestCaseOption
     XOR,
     CROSS,
     MULTI_CROSS,
-    LINEAR_SIMPLE_2D
+    LINEAR_SIMPLE_2D,
+    LINEAR_TRICKY_3D
 };
 
 void generateParameter(TestCaseOption testCaseOption) {
@@ -110,6 +111,8 @@ void generateParameter(TestCaseOption testCaseOption) {
         neuronsPerLayer = new int[] { 2, 3 };
         nplSize = 2;
         sampleSize = 500;
+        inputsCount = 2;
+        outputsCount = 3;
 
         X = new double[sampleSize * 2];
         Y = new double[sampleSize * 3];
@@ -154,6 +157,8 @@ void generateParameter(TestCaseOption testCaseOption) {
         isClassification = true;
         break;
     case LINEAR_SIMPLE_2D:
+        inputsCount = 1;
+        outputsCount = 1;
         isClassification = false;
         neuronsPerLayer = new int[] {
             1, 1
@@ -171,14 +176,34 @@ void generateParameter(TestCaseOption testCaseOption) {
 
         sampleSize = 2;
         break;
+    case LINEAR_TRICKY_3D:
+        inputsCount = 2;
+        outputsCount = 1;
+        isClassification = false;
+        neuronsPerLayer = new int[] {
+            2, 1
+        };
+
+        nplSize = 2;
+
+        X = new double[] {
+            1, 1, 2, 2, 3, 3
+        };
+
+        Y = new double[] {
+            1, 2, 3
+        };
+
+        sampleSize = 3;
+        break;
     }
 }
 
 int main() 
 {
-    generateParameter(LINEAR_MULTIPLE);
+    generateParameter(LINEAR_TRICKY_3D);
 
-    bool useLinearModel = true;
+    bool useLinearModel = false;
     double* result;
 
     int epochs = 1000;

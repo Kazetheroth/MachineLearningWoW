@@ -12,7 +12,13 @@ namespace DefaultNamespace
         LINEAR_MULTIPLE,
         XOR,
         CROSS,
-        MULTI_LINEAR_3_CLASSES
+        MULTI_LINEAR_3_CLASSES,
+        MULTI_CROSS,
+        LINEAR_SIMPLE_2D,
+        NON_LINEAR_SIMPLE_2D,
+        LINEAR_SIMPLE_3D,
+        LINEAR_TRICKY_3D,
+        NON_LINEAR_SIMPLE_3D
     }
     
     public class TestCaseParameters
@@ -28,6 +34,7 @@ namespace DefaultNamespace
     public static class MachineLearningTestCase
     {
         public static MachineLearningController mlcInstance;
+        public static TestCaseParameters lastTestCaseParameters;
         
         public static TestCaseParameters GetTestOption(TestCaseOption testCaseOption)
         {
@@ -146,6 +153,95 @@ namespace DefaultNamespace
                             sampleSize = 500,
                             isClassification = true
                     };
+                case TestCaseOption.MULTI_CROSS:
+                    xArray = new List<double>();
+                    yArray = new List<double>();
+
+                    for (int i = 0; i < 1000; ++i)
+                    {
+                        xArray.Add(Random.Range(-1.0f, 1.0f));
+                        xArray.Add(Random.Range(-1.0f, 1.0f));
+
+                        int xIndex = i * 2;
+                        int yIndex = i * 2 + 1;
+
+                        if (Math.Abs(xArray[xIndex]) % 0.5 <= 0.25 && Math.Abs(xArray[yIndex]) % 0.5 > 0.25)
+                        {
+                            yArray.Add(1);
+                            yArray.Add(0);
+                            yArray.Add(0);
+                        } else if (Math.Abs(xArray[xIndex]) % 0.5 > 0.25 && Math.Abs(xArray[yIndex]) % 0.5 <= 0.25)
+                        {
+                            yArray.Add(0);
+                            yArray.Add(1);
+                            yArray.Add(0);
+                        } else
+                        {
+                            yArray.Add(0);
+                            yArray.Add(0);
+                            yArray.Add(1);
+                        }
+                    }
+                    
+                    return new TestCaseParameters
+                    {
+                        neuronsPerLayer = new List<int> {2, 3, 3, 3},
+                        nplSize = 4,
+                        X = xArray,
+                        Y = yArray,
+                        sampleSize = 1000,
+                        isClassification = true
+                    };
+                case TestCaseOption.LINEAR_SIMPLE_2D:
+                    return new TestCaseParameters
+                    {
+                        neuronsPerLayer = new List<int> {1, 1},
+                        nplSize = 2,
+                        X = new List<double> {1, 2},
+                        Y = new List<double> {2, 3},
+                        sampleSize = 2,
+                        isClassification = false
+                    };
+                case TestCaseOption.NON_LINEAR_SIMPLE_2D:
+                    return new TestCaseParameters
+                    {
+                        neuronsPerLayer = new List<int> {1, 3, 1},
+                        nplSize = 3,
+                        X = new List<double> {1, 2, 3},
+                        Y = new List<double> {2, 3, 2.5},
+                        sampleSize = 3,
+                        isClassification = false
+                    };
+                case TestCaseOption.LINEAR_SIMPLE_3D:
+                    return new TestCaseParameters
+                    {
+                        neuronsPerLayer = new List<int> {2, 1},
+                        nplSize = 2,
+                        X = new List<double> {1, 1, 2, 2, 3, 1},
+                        Y = new List<double> {2, 3, 2.5},
+                        sampleSize = 3,
+                        isClassification = false
+                    };
+                case TestCaseOption.LINEAR_TRICKY_3D:
+                    return new TestCaseParameters
+                    {
+                        neuronsPerLayer = new List<int> {2, 1},
+                        nplSize = 2,
+                        X = new List<double> {1, 1, 2, 2, 3, 3},
+                        Y = new List<double> {1, 2, 3},
+                        sampleSize = 3,
+                        isClassification = false
+                    };
+                case TestCaseOption.NON_LINEAR_SIMPLE_3D:
+                    return new TestCaseParameters
+                    {
+                        neuronsPerLayer = new List<int> {2, 2, 1},
+                        nplSize = 3,
+                        X = new List<double> {1, 0, 0, 1, 1, 1, 0, 0},
+                        Y = new List<double> {2, 1, -2, -1},
+                        sampleSize = 4,
+                        isClassification = false
+                    };
             }
 
             return testCaseParameters;
@@ -153,51 +249,51 @@ namespace DefaultNamespace
 
         public static double[] RunMachineLearningTestCase(bool useLinearModel, TestCaseOption testCaseOption, int epochs, double learningRate, TestCaseParameters simulateTestCaseParameters)
         {
-            TestCaseParameters testCaseParameters = simulateTestCaseParameters ?? GetTestOption(testCaseOption);
+            lastTestCaseParameters = simulateTestCaseParameters ?? GetTestOption(testCaseOption);
 
             if (simulateTestCaseParameters == null)
             {
                 Debug.Log("Generate new test case");
             }
             
-            if (testCaseParameters == null)
+            if (lastTestCaseParameters == null)
             {
                 return null;
             }
 
-            mlcInstance.InstantiateSpheresInScene(testCaseParameters.X, testCaseParameters.sampleSize, null);
+            mlcInstance.InstantiateSpheresInScene(lastTestCaseParameters.X, lastTestCaseParameters.sampleSize, null);
 
-            double[] result = new double[testCaseParameters.sampleSize * testCaseParameters.neuronsPerLayer[testCaseParameters.nplSize - 1]];
+            double[] result = new double[lastTestCaseParameters.sampleSize * lastTestCaseParameters.neuronsPerLayer[lastTestCaseParameters.nplSize - 1]];
 
             IntPtr rawResut;
             if (useLinearModel)
             {
                 rawResut = CppImporter.trainLinearModel(
-                    testCaseParameters.X.ToArray(),
-                    testCaseParameters.neuronsPerLayer[0],
-                    testCaseParameters.Y.ToArray(),
-                    testCaseParameters.neuronsPerLayer[testCaseParameters.nplSize - 1],
-                    testCaseParameters.sampleSize,
+                    lastTestCaseParameters.X.ToArray(),
+                    lastTestCaseParameters.neuronsPerLayer[0],
+                    lastTestCaseParameters.Y.ToArray(),
+                    lastTestCaseParameters.neuronsPerLayer[lastTestCaseParameters.nplSize - 1],
+                    lastTestCaseParameters.sampleSize,
                     epochs,
                     learningRate,
-                    testCaseParameters.isClassification
+                    lastTestCaseParameters.isClassification
                 );
                 
             }
             else
             {
                 rawResut = CppImporter.trainMLPModel(
-                    testCaseParameters.neuronsPerLayer.ToArray(),
-                    testCaseParameters.nplSize,
-                    testCaseParameters.X.ToArray(),
-                    testCaseParameters.Y.ToArray(),
-                    testCaseParameters.sampleSize,
+                    lastTestCaseParameters.neuronsPerLayer.ToArray(),
+                    lastTestCaseParameters.nplSize,
+                    lastTestCaseParameters.X.ToArray(),
+                    lastTestCaseParameters.Y.ToArray(),
+                    lastTestCaseParameters.sampleSize,
                     epochs,
                     learningRate,
-                    testCaseParameters.isClassification
+                    lastTestCaseParameters.isClassification
                 );
             }
-            Marshal.Copy(rawResut, result, 0, testCaseParameters.sampleSize);
+            Marshal.Copy(rawResut, result, 0, lastTestCaseParameters.sampleSize);
 
             return result;
         }

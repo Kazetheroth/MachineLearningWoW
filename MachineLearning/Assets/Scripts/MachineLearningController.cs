@@ -39,35 +39,17 @@ public class MachineLearningController : MonoBehaviour
 
     public void RunMachineLearningTestCase()
     {
-        double[] resultXorTest = MachineLearningTestCase.RunMachineLearningTestCase(useLinearModel, testCaseOption, epochs, learningRate, simulateTestCaseParameters);
+        double[] resultMLTestCase = MachineLearningTestCase.RunMachineLearningTestCase(useLinearModel, testCaseOption, epochs, learningRate, simulateTestCaseParameters);
+
+        DisplayOutput(resultMLTestCase);
 
         simulateTestCaseParameters = null;
-        
-        if (resultXorTest == null || resultXorTest.Length == 0)
-        {
-            Debug.Log("Doesn't work");
-        }
-        else
-        {
-            Debug.Log("Nb result : " + resultXorTest.Length);
-            for (int i = 0; i < resultXorTest.Length; ++i)
-            {
-                if (testCaseOption == TestCaseOption.MULTI_LINEAR_3_CLASSES)
-                {
-                    ColorMultiCrossSphere(i / 3, resultXorTest[i++], resultXorTest[i++], resultXorTest[i]);
-                }
-                else
-                {
-                    Debug.Log(resultXorTest[i]);
-                    ColorSphere(i, resultXorTest[i]);
-                }
-            }
-        }
     }
 
     public void SimulateResultTest()
     {
         simulateTestCaseParameters = MachineLearningTestCase.GetTestOption(testCaseOption);
+        MachineLearningTestCase.lastTestCaseParameters = simulateTestCaseParameters;
 
         InstantiateSpheresInScene(simulateTestCaseParameters.X, simulateTestCaseParameters.sampleSize, simulateTestCaseParameters.Y);
     }
@@ -84,17 +66,41 @@ public class MachineLearningController : MonoBehaviour
         for (int i = 0; i < allSample; i += nbParametersInSample)
         {
             PlaceSphere(samples[i], nbParametersInSample > 1 ? samples[i + 1] : 0, nbParametersInSample > 2 ? samples[i + 2] : 0);
+        }
+        
+        if (expectedOutputSimulation != null)
+        {
+            DisplayOutput(expectedOutputSimulation.ToArray());
+        }
+    }
 
-            if (expectedOutputSimulation != null)
+    private void DisplayOutput(double[] resultMLTestCase)
+    {
+        if (resultMLTestCase == null || resultMLTestCase.Length == 0)
+        {
+            Debug.Log("Doesn't work");
+        }
+        else if (MachineLearningTestCase.lastTestCaseParameters != null && MachineLearningTestCase.lastTestCaseParameters.isClassification)
+        {
+            Debug.Log("Nb result : " + resultMLTestCase.Length);
+            for (int i = 0; i < resultMLTestCase.Length; ++i)
             {
-                if (testCaseOption == TestCaseOption.MULTI_LINEAR_3_CLASSES)
+                if (testCaseOption == TestCaseOption.MULTI_LINEAR_3_CLASSES || testCaseOption == TestCaseOption.MULTI_CROSS)
                 {
-                    ColorMultiCrossSphere(index / 3, expectedOutputSimulation[index++], expectedOutputSimulation[index++], expectedOutputSimulation[index++]);
+                    ColorMultiCrossSphere(i / 3, resultMLTestCase[i++], resultMLTestCase[i++], resultMLTestCase[i]);
                 }
                 else
                 {
-                    ColorSphere(i / nbParametersInSample, expectedOutputSimulation[i / nbParametersInSample]);
+                    Debug.Log(resultMLTestCase[i]);
+                    ColorSphere(i, resultMLTestCase[i]);
                 }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < resultMLTestCase.Length; ++i)
+            {
+                ReplaceSphere(i, resultMLTestCase[i], MachineLearningTestCase.lastTestCaseParameters.neuronsPerLayer[0] + 1);
             }
         }
     }
@@ -112,6 +118,27 @@ public class MachineLearningController : MonoBehaviour
         }
         
         activateGameObjects.Clear();
+    }
+
+    private void ReplaceSphere(int index, double newPos, int indexPos)
+    {
+        GameObject currentSphere = activateGameObjects[index];
+        
+        Vector3 pos = currentSphere.transform.position;
+        if (indexPos == 1)
+        {
+            pos.x = (float) newPos * 10;
+        } 
+        else if (indexPos == 2)
+        {
+            pos.y = (float) newPos * 10;
+        }
+        else
+        {
+            pos.z = (float) newPos * 10;
+        }
+
+        currentSphere.transform.position = pos;
     }
 
     private void PlaceSphere(double x, double y, double z)
