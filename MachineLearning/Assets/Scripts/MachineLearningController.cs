@@ -48,10 +48,18 @@ public class MachineLearningController : MonoBehaviour
         }
         else
         {
+            Debug.Log("Nb result : " + resultXorTest.Length);
             for (int i = 0; i < resultXorTest.Length; ++i)
             {
-                Debug.Log(resultXorTest[i]);
-                ColorSphere(i, resultXorTest[i]);
+                if (testCaseOption == TestCaseOption.MULTI_CROSS)
+                {
+                    ColorMultiCrossSphere(i / 3, resultXorTest[i++], resultXorTest[i++], resultXorTest[i]);
+                }
+                else
+                {
+                    Debug.Log(resultXorTest[i]);
+                    ColorSphere(i, resultXorTest[i]);
+                }
             }
         }
     }
@@ -70,13 +78,22 @@ public class MachineLearningController : MonoBehaviour
         int allSample = samples.Count;
         int nbParametersInSample = allSample / sampleSize;
 
+        int index = 0;
+        
         for (int i = 0; i < allSample; i += nbParametersInSample)
         {
             PlaceSphere(samples[i], nbParametersInSample > 1 ? samples[i + 1] : 0, nbParametersInSample > 2 ? samples[i + 2] : 0);
 
             if (expectedOutputSimulation != null)
             {
-                ColorSphere(i / nbParametersInSample, expectedOutputSimulation[i / nbParametersInSample]);
+                if (testCaseOption == TestCaseOption.MULTI_CROSS)
+                {
+                    ColorMultiCrossSphere(index / 3, expectedOutputSimulation[index++], expectedOutputSimulation[index++], expectedOutputSimulation[index++]);
+                }
+                else
+                {
+                    ColorSphere(i / nbParametersInSample, expectedOutputSimulation[i / nbParametersInSample]);
+                }
             }
         }
     }
@@ -110,19 +127,46 @@ public class MachineLearningController : MonoBehaviour
         activateGameObjects.Add(newSphere);
     }
 
+    private void ColorMultiCrossSphere(int index, double result1, double result2, double result3)
+    {
+        Renderer renderer = activateGameObjects[index].GetComponent<Renderer>();
+
+        if (result1 > 0.4 && result1 > result2 && result1 > result3)
+        {
+            Material greenMat = new Material(renderer.sharedMaterial) {color = Color.green};
+            renderer.sharedMaterial = greenMat;
+        } else if (result2 > 0.4 && result2 > result1 && result2 > result3)
+        {
+            Material redMat = new Material(renderer.sharedMaterial) {color = Color.red};
+            renderer.sharedMaterial = redMat;
+        } else if (result3 > 0.4 && result3 > result1 && result3 > result2)
+        {
+            Material blueMat = new Material(renderer.sharedMaterial) {color = Color.blue};
+            renderer.sharedMaterial = blueMat;
+        }
+        else
+        {
+            Material blueMat = new Material(renderer.sharedMaterial) {color = Color.white};
+            renderer.sharedMaterial = blueMat;
+        }
+    }
+    
     private void ColorSphere(int index, double result)
     {
         Renderer renderer = activateGameObjects[index].GetComponent<Renderer>();
 
-        if (result >= 0.6)
+        if (result >= 0.8)
         {
             Material greenMat = new Material(renderer.sharedMaterial) {color = Color.green};
             renderer.sharedMaterial = greenMat;
         }
-        else if (result <= -0.6)
+        else if (result <= -0.8)
         {
             Material redMat = new Material(renderer.sharedMaterial) {color = Color.red};
             renderer.sharedMaterial = redMat;
+        } else {
+            Material blueMat = new Material(renderer.sharedMaterial) {color = Color.white};
+            renderer.sharedMaterial = blueMat;
         }
     }
 }

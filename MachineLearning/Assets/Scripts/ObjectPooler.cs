@@ -106,7 +106,6 @@ namespace Games.Global.Weapons
 			return pooledObjectsList[index];
 		}
 
-
 		public int AddObject(GameObject GO, int amt = 3, bool exp = true)
 		{
 			ObjectPoolItem item = new ObjectPoolItem(GO, amt, exp);

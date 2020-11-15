@@ -99,9 +99,52 @@ namespace DefaultNamespace
                         isClassification = true
                     };
                 case TestCaseOption.MULTI_CROSS:
-                    return new TestCaseParameters
-                    {
+                    xArray = new List<double>();
+                    yArray = new List<double>();
 
+                    for (int i = 0; i < 500; ++i)
+                    {
+                        xArray.Add(Random.Range(-1.0f, 1.0f));
+                        xArray.Add(Random.Range(-1.0f, 1.0f));
+
+                        int xIndex = i * 2;
+                        int yIndex = i * 2 + 1;
+
+                        if (-xArray[xIndex] - xArray[yIndex] - 0.5 > 0 && xArray[yIndex] < 0 &&
+                            xArray[xIndex] - xArray[yIndex] - 0.5 < 0)
+                        {
+                            yArray.Add(1);
+                            yArray.Add(0);
+                            yArray.Add(0);
+                        } else if (-xArray[xIndex] - xArray[yIndex] - 0.5 < 0 && xArray[yIndex] > 0 &&
+                                   xArray[xIndex] - xArray[yIndex] - 0.5 < 0)
+                        {
+                            yArray.Add(0);
+                            yArray.Add(1);
+                            yArray.Add(0);
+                        } else if (-xArray[xIndex] - xArray[yIndex] - 0.5 < 0 && xArray[yIndex] < 0 &&
+                                   xArray[xIndex] - xArray[yIndex] - 0.5 > 0)
+                        {
+                            yArray.Add(0);
+                            yArray.Add(0);
+                            yArray.Add(1);
+                        }
+                        else
+                        {
+                            yArray.Add(0);
+                            yArray.Add(0);
+                            yArray.Add(0);
+                        }
+                    }
+
+                    return new TestCaseParameters
+                        {
+                            neuronsPerLayer = new List<int> {2, 3},
+                            nplSize = 2,
+                            X = xArray,
+                            Y = yArray,
+                            sampleSize = 500,
+                            isClassification = true
                     };
             }
 
@@ -124,7 +167,7 @@ namespace DefaultNamespace
 
             mlcInstance.InstantiateSpheresInScene(testCaseParameters.X, testCaseParameters.sampleSize, null);
 
-            double[] result = new double[testCaseParameters.sampleSize];
+            double[] result = new double[testCaseParameters.sampleSize * testCaseParameters.neuronsPerLayer[testCaseParameters.nplSize - 1]];
 
             IntPtr rawResut = CppImporter.trainMLPModel(
                 testCaseParameters.neuronsPerLayer.ToArray(),
