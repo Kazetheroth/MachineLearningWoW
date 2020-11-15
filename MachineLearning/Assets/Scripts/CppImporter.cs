@@ -21,4 +21,7 @@ public static class CppImporter
 
     [DllImport("MlDll", EntryPoint = "train_mlp_model")]
     public static extern System.IntPtr trainMLPModel(int[] neuronsPerLayer, int nplSize, double[] X, double[] Y, int sampleSize, int epochs, double learningRate, bool isClassification);
+
+    [DllImport("MlDll", EntryPoint = "train_linear_model")]
+    public static extern System.IntPtr trainLinearModel(double[] X, int inputCount, double[] Y, int outputCount, int sampleSize, int epochs, double learningRate, bool isClassification);
 }

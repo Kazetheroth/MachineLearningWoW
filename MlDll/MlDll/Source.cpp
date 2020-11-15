@@ -19,22 +19,24 @@ extern "C" {
 		return weights;
 	}
 
-	__declspec(dllexport) double predict_linear_model_classification(double* model, double inputs[], int inputs_count) {
+	__declspec(dllexport) double predict_linear_model_classification(double* model, vector<double> inputs, int inputs_count) {
 		double sum = model[0];
-        for (int i = 0; i < inputs_count; ++i) {
+
+		for (int i = 0; i < inputs_count; ++i) {
             sum += inputs[i] * model[i + 1];
         }
 
-		return sum < 0.5 ? -1 : 1;
+		return Utils::sigmoid(sum) < 0.5 ? -1 : 1;
 	}
 
-    __declspec(dllexport) double predict_linear_model_regression(double* model, double inputs[], int inputs_count) {
+    __declspec(dllexport) double predict_linear_model_regression(double* model, vector<double> inputs, int inputs_count) {
 		double sum = model[0];
+
 		for (int i = 0; i < inputs_count; ++i) {
 			sum += inputs[i] * model[i + 1];
 		}
 
-		return sum < 0.5 ? -1 : 1;
+		return Utils::sigmoid(sum);
     }
 
 	__declspec(dllexport) double* predict_linear_model_multiclass_classification(double* model, double inputs[], int inputs_count,
@@ -44,8 +46,39 @@ extern "C" {
 	}
 
 	__declspec(dllexport) void train_linear_model_rosenblatt(double* model, double all_inputs[], int inputs_count, int sample_count,
-		double all_expected_outputs[], int expected_output_size, int epochs, double learning_rate) {
-		// TODO
+		double all_expected_outputs[], int expected_output_size, int epochs, double learning_rate, bool isClassification) {
+
+		vector<double> x;
+		double outputExpected;
+		double predictResult;
+
+		srand(time(NULL));
+
+		for (int it = 0; it < epochs; ++it) {
+			int k = rand() % sample_count;
+
+			x.clear();
+			x.resize(inputs_count);
+
+			for (int i = 0; i < inputs_count; ++i) {
+				x[i] = (all_inputs[inputs_count * k + i]);
+			}
+
+			outputExpected = all_expected_outputs[k];
+
+			if (isClassification) {
+				predictResult = predict_linear_model_classification(model, x, inputs_count);
+			}
+			else {
+				predictResult = predict_linear_model_regression(model, x, inputs_count);
+			}
+
+			model[0] += learning_rate * (outputExpected - predictResult);
+			for (int i = 1; i < inputs_count + 1; ++i) {
+				model[i] += learning_rate * (outputExpected - predictResult) * x[i - 1];
+			}
+		}
+
 		return;
 	}
 
@@ -53,8 +86,25 @@ extern "C" {
 		delete[] model;
 	}
 
-	__declspec(dllexport) double my_add(double a, double b) {
-		return a + b + 2;
+	__declspec(dllexport) double* train_linear_model(double* inputs, int inputsCount, double* outputs, int outputsCount, int sampleSize, int epochs, double learningRate, bool isClassification) {
+		double* model = create_linear_model(inputsCount);
+		double* result = new double[outputsCount * sampleSize];
+
+		train_linear_model_rosenblatt(model, inputs, inputsCount, sampleSize, outputs, outputsCount, epochs, learningRate, isClassification);
+
+		cout << "AFTER TRAINING" << endl;
+		for (int k = 0; k < outputsCount * sampleSize; ++k) {
+			if (isClassification) {
+				result[k] = predict_linear_model_classification(model, Utils::createVector(inputs, k * inputsCount, inputsCount * (k + 1)), inputsCount);
+			}
+			else {
+				result[k] = predict_linear_model_regression(model, Utils::createVector(inputs, k * inputsCount, inputsCount * (k + 1)), inputsCount);
+			}
+		}
+
+		delete_linear_model(model);
+
+		return result;
 	}
 
 	/* ====================== MLP ====================== */
@@ -63,16 +113,16 @@ extern "C" {
 		double* result = new double[sampleSize * neuronsPerLayer[nplSize - 1]];
 
 		cout << "BEFORE TRAINING " << sampleSize * neuronsPerLayer[nplSize - 1] << endl;
-		for (int k = 0; k < sampleSize; ++k) {
+		/*for (int k = 0; k < sampleSize; ++k) {
 			mlp->forwardPass(Utils::createVector(X, k * 2, 2 * (k + 1)), isClassification);
 			mlp->displayInput();
-		}
+		}*/
 
 		mlp->train(X, Y, sampleSize, isClassification, epochs, learningRate);
 
 		cout << "AFTER TRAINING" << endl;
 		for (int k = 0; k < sampleSize; ++k) {
-			mlp->forwardPass(Utils::createVector(X, k * 2, 2 * (k + 1)), isClassification);
+			mlp->forwardPass(Utils::createVector(X, k * neuronsPerLayer[0], neuronsPerLayer[0] * (k + 1)), isClassification);
 			mlp->fillInputsResult(result, k);
 		}
 

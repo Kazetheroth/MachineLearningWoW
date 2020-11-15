@@ -12,7 +12,7 @@ namespace DefaultNamespace
         LINEAR_MULTIPLE,
         XOR,
         CROSS,
-        MULTI_CROSS
+        MULTI_LINEAR_3_CLASSES
     }
     
     public class TestCaseParameters
@@ -98,7 +98,7 @@ namespace DefaultNamespace
                         sampleSize = 500,
                         isClassification = true
                     };
-                case TestCaseOption.MULTI_CROSS:
+                case TestCaseOption.MULTI_LINEAR_3_CLASSES:
                     xArray = new List<double>();
                     yArray = new List<double>();
 
@@ -151,7 +151,7 @@ namespace DefaultNamespace
             return testCaseParameters;
         }
 
-        public static double[] RunMachineLearningTestCase(TestCaseOption testCaseOption, int epochs, double learningRate, TestCaseParameters simulateTestCaseParameters)
+        public static double[] RunMachineLearningTestCase(bool useLinearModel, TestCaseOption testCaseOption, int epochs, double learningRate, TestCaseParameters simulateTestCaseParameters)
         {
             TestCaseParameters testCaseParameters = simulateTestCaseParameters ?? GetTestOption(testCaseOption);
 
@@ -169,16 +169,34 @@ namespace DefaultNamespace
 
             double[] result = new double[testCaseParameters.sampleSize * testCaseParameters.neuronsPerLayer[testCaseParameters.nplSize - 1]];
 
-            IntPtr rawResut = CppImporter.trainMLPModel(
-                testCaseParameters.neuronsPerLayer.ToArray(),
-                testCaseParameters.nplSize,
-                testCaseParameters.X.ToArray(),
-                testCaseParameters.Y.ToArray(),
-                testCaseParameters.sampleSize,
-                epochs,
-                learningRate,
-                testCaseParameters.isClassification
-            );
+            IntPtr rawResut;
+            if (useLinearModel)
+            {
+                rawResut = CppImporter.trainLinearModel(
+                    testCaseParameters.X.ToArray(),
+                    testCaseParameters.neuronsPerLayer[0],
+                    testCaseParameters.Y.ToArray(),
+                    testCaseParameters.neuronsPerLayer[testCaseParameters.nplSize - 1],
+                    testCaseParameters.sampleSize,
+                    epochs,
+                    learningRate,
+                    testCaseParameters.isClassification
+                );
+                
+            }
+            else
+            {
+                rawResut = CppImporter.trainMLPModel(
+                    testCaseParameters.neuronsPerLayer.ToArray(),
+                    testCaseParameters.nplSize,
+                    testCaseParameters.X.ToArray(),
+                    testCaseParameters.Y.ToArray(),
+                    testCaseParameters.sampleSize,
+                    epochs,
+                    learningRate,
+                    testCaseParameters.isClassification
+                );
+            }
             Marshal.Copy(rawResut, result, 0, testCaseParameters.sampleSize);
 
             return result;

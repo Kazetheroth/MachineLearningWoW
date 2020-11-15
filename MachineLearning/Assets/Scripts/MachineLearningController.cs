@@ -10,6 +10,7 @@ public class MachineLearningController : MonoBehaviour
 {
     [SerializeField] private ObjectPooler spherePooler;
     
+    [SerializeField] private bool useLinearModel;
     [SerializeField] private TestCaseOption testCaseOption;
     [SerializeField] private int epochs = 100000;
     [SerializeField] private double learningRate = 0.1;
@@ -38,7 +39,7 @@ public class MachineLearningController : MonoBehaviour
 
     public void RunMachineLearningTestCase()
     {
-        double[] resultXorTest = MachineLearningTestCase.RunMachineLearningTestCase(testCaseOption, epochs, learningRate, simulateTestCaseParameters);
+        double[] resultXorTest = MachineLearningTestCase.RunMachineLearningTestCase(useLinearModel, testCaseOption, epochs, learningRate, simulateTestCaseParameters);
 
         simulateTestCaseParameters = null;
         
@@ -51,7 +52,7 @@ public class MachineLearningController : MonoBehaviour
             Debug.Log("Nb result : " + resultXorTest.Length);
             for (int i = 0; i < resultXorTest.Length; ++i)
             {
-                if (testCaseOption == TestCaseOption.MULTI_CROSS)
+                if (testCaseOption == TestCaseOption.MULTI_LINEAR_3_CLASSES)
                 {
                     ColorMultiCrossSphere(i / 3, resultXorTest[i++], resultXorTest[i++], resultXorTest[i]);
                 }
@@ -86,7 +87,7 @@ public class MachineLearningController : MonoBehaviour
 
             if (expectedOutputSimulation != null)
             {
-                if (testCaseOption == TestCaseOption.MULTI_CROSS)
+                if (testCaseOption == TestCaseOption.MULTI_LINEAR_3_CLASSES)
                 {
                     ColorMultiCrossSphere(index / 3, expectedOutputSimulation[index++], expectedOutputSimulation[index++], expectedOutputSimulation[index++]);
                 }
