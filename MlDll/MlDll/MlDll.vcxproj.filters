@@ -24,12 +24,24 @@
     <ClCompile Include="MLP.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RBF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Kmeans.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MLP.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RBF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Kmeans.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

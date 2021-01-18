@@ -37,7 +37,7 @@ void generateParameter(TestCaseOption testCaseOption) {
 
     switch (testCaseOption) {
     case LINEAR_SIMPLE:
-        neuronsPerLayer = new int[] {
+        neuronsPerLayer = new int[2] {
             2, 1
         };
 
@@ -45,13 +45,13 @@ void generateParameter(TestCaseOption testCaseOption) {
         inputsCount = 2;
         outputsCount = 1;
 
-        X = new double[] {
+        X = new double[6] {
             1, 1,
             2, 3,
             3, 3
         };
 
-        Y = new double[] {
+        Y = new double[3] {
             1,
                 -1,
                 -1
@@ -64,7 +64,7 @@ void generateParameter(TestCaseOption testCaseOption) {
         inputsCount = 2;
         outputsCount = 1;
 
-        neuronsPerLayer = new int[] {
+        neuronsPerLayer = new int[2] {
             2, 1
         };
 
@@ -81,7 +81,7 @@ void generateParameter(TestCaseOption testCaseOption) {
 
         break;
     case XOR:
-        neuronsPerLayer = new int[] {
+        neuronsPerLayer = new int[3] {
             2, 3, 1
         };
 
@@ -89,14 +89,14 @@ void generateParameter(TestCaseOption testCaseOption) {
         inputsCount = 2;
         outputsCount = 1;
 
-        X = new double[] {
+        X = new double[8] {
             0, 0,
                 0, 1,
                 1, 0,
                 1, 1
         };
 
-        Y = new double[] {
+        Y = new double[4] {
             -1,
                 1,
                 1,
@@ -108,7 +108,7 @@ void generateParameter(TestCaseOption testCaseOption) {
     case CROSS:
         break;
     case MULTI_CROSS:
-        neuronsPerLayer = new int[] { 2, 3 };
+        neuronsPerLayer = new int[2] { 2, 3 };
         nplSize = 2;
         sampleSize = 500;
         inputsCount = 2;
@@ -160,17 +160,17 @@ void generateParameter(TestCaseOption testCaseOption) {
         inputsCount = 1;
         outputsCount = 1;
         isClassification = false;
-        neuronsPerLayer = new int[] {
+        neuronsPerLayer = new int[2] {
             1, 1
         };
 
         nplSize = 2;
 
-        X = new double[] {
+        X = new double[2] {
             1, 2
         };
 
-        Y = new double[] {
+        Y = new double[2] {
             2, 3
         };
 
@@ -180,17 +180,17 @@ void generateParameter(TestCaseOption testCaseOption) {
         inputsCount = 2;
         outputsCount = 1;
         isClassification = false;
-        neuronsPerLayer = new int[] {
+        neuronsPerLayer = new int[2] {
             2, 1
         };
 
         nplSize = 2;
 
-        X = new double[] {
+        X = new double[6] {
             1, 1, 2, 2, 3, 3
         };
 
-        Y = new double[] {
+        Y = new double[3] {
             1, 2, 3
         };
 
