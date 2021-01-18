@@ -4,14 +4,15 @@
 #include <vector>
 #include <math.h>
 #include <time.h>
+#include "Utils.h"
 
 using namespace std;
 
-class Kmeans
+class KMeans
 {
 public:
-	float getDistance(vector<double> x1, vector<double> x2);
+	KMeans();
 	vector<double> getAveragePointInCluster(vector<vector<double>> cluster);
-	vector<vector<vector<double>>> kMeans(vector<vector<double>> X, int k, int maxIterations);
+	vector<vector<double>> runkMeans(vector<vector<double>> X, int k, int maxIterations);
 };
 

@@ -6,23 +6,26 @@
 #include <math.h>
 #include <time.h>
 
+#include "KMeans.h"
+
 using namespace std;
 
 class RBF
 {
 public:
-	
+	RBF(vector<vector<double>> trainingInputs, int centroidsNb, int classesNb, int maxKMeans);
+	void TrainRBF();
+	float CalculateGamma();
+	void runRBF();
 
 private:
-	int* neuronsPerLayer;
-	int nbLayers;
-
-	int nbClasses;
-	int k;
-	bool stdFromCluster;
-
-	vector<vector<vector<double>>> weights;
 	vector<vector<double>> inputs;
-	vector<vector<double>> deltas;
+	int numberOfCentroids;
+	vector<vector<double>> centroids;
+	vector<vector<double>> weights;
+	int numberOfClasses;
+	int maxIterationsInKMeans;
+	KMeans kMeans;
+	float gamma;
 };
 

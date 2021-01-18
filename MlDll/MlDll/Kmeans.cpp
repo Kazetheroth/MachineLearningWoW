@@ -1,17 +1,10 @@
-#include "Kmeans.h"
+#include "KMeans.h"
 
-float Kmeans::getDistance(vector<double> x1, vector<double> x2) {
-	if (x1.size() != x2.size()) {
-		return NULL;
-	}
-	float sum = 0;
-	for (int i = 0; i < x1.size(); ++i) {
-		sum += pow(x1[i] - x2[i], 2);
-	}
-	return sqrt(sum);
+KMeans::KMeans() {
+
 }
 
-vector<double> Kmeans::getAveragePointInCluster(vector<vector<double>> cluster) {
+vector<double> KMeans::getAveragePointInCluster(vector<vector<double>> cluster) {
 	vector<double> newAveragePoint;
 
 	for (int i = 0; i < cluster[0].size(); ++i) {
@@ -24,7 +17,7 @@ vector<double> Kmeans::getAveragePointInCluster(vector<vector<double>> cluster) 
 	return newAveragePoint;
 }
 
-vector<vector<vector<double>>> Kmeans::kMeans(vector<vector<double>> X, int k, int maxIterations) {
+vector<vector<double>> KMeans::runkMeans(vector<vector<double>> X, int k, int maxIterations) {
 	vector<vector<double>> centroids;
 	vector<vector<double>> oldCentroids;
 	vector<vector<vector<double>>> clusters;
@@ -46,7 +39,7 @@ vector<vector<vector<double>>> Kmeans::kMeans(vector<vector<double>> X, int k, i
 			float minDist = 1000;
 			int currentIndex = -1;
 			for (int j = 0; j < k; ++j) {
-				float currentDist = getDistance(X[i], centroids[j]);
+				float currentDist = Utils::getDistance(X[i], centroids[j]);
 				if (currentDist < minDist) {
 					minDist = currentDist;
 					currentIndex = j;
@@ -70,5 +63,5 @@ vector<vector<vector<double>>> Kmeans::kMeans(vector<vector<double>> X, int k, i
 		}
 		++iterations;
 	}
-	return clusters;
+	return centroids;
 }
