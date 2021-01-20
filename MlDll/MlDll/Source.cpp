@@ -4,6 +4,7 @@
 
 #include "Utils.h"
 #include "MLP.h"
+#include "RBF.h"
 
 extern "C" {
 
@@ -126,6 +127,31 @@ extern "C" {
 			mlp->fillInputsResult(result, k);
 		}
 
+		return result;
+	}
+	
+	/* ====================== RBF ====================== */
+	__declspec(dllexport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroidTaMere, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila) {
+		vector<double> output;
+		vector<vector<double>> entries;
+
+		for (int i = 0; i < nbImages; ++i) {
+			vector<double> pixels;
+			for (int j = 0; j < XSeparation; ++j) {
+				int index = (i * XSeparation) + j;
+
+				pixels.push_back(X[index]);
+			}
+
+			entries.push_back(pixels);
+
+			output.push_back(Y[i]);
+		}
+
+		RBF* rbf = new RBF(entries, centroidTaMere, maxClasses, maxKMeans, output, entries, output);
+		rbf->TrainRBF();
+		double* result = rbf->getResult(entries,output,rbf->weights,rbf->centroids,rbf->gamma);
+		
 		return result;
 	}
 }

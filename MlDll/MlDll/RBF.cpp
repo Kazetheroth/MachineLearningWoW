@@ -50,6 +50,22 @@ double RBF::getAccuracy(vector<vector<double>> X, vector<double> y,	vector<vecto
 
 }
 
+double* RBF::getResult(vector<vector<double>> X, vector<double> y,	vector<vector<double>>w, vector<vector<double>>centroids, double gamma) {
+	vector<vector<double>> ts_rbf_list = GetAsRbfList(X, centroids, gamma);
+	vector<vector<double>> pred_test_y_one_hot = Utils::matDot(ts_rbf_list, w);
+	vector<double> pred_test_y;
+	int ySize = y.size();
+	double* predResult = new double[ySize];
+	int loop = 0;
+	for (vector<double> row : pred_test_y_one_hot) {
+		pred_test_y.push_back(Utils::argMax(row));
+		predResult[loop] = pred_test_y[loop];
+		++loop;
+	}
+
+	return predResult;
+}
+
 double RBF::GetRbf(vector<double> x, vector<double> c, double s) {
 	double distance = Utils::getDistance(x, c);
 	return 1 / exp(-distance / (s * s));
