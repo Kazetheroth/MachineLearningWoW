@@ -204,6 +204,7 @@ int main()
     generateParameter(LINEAR_TRICKY_3D);
 
     bool useLinearModel = false;
+    bool useRBF = false;
     double* result;
 
     int epochs = 1000;
