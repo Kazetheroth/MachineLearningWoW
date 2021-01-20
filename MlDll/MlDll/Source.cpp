@@ -104,7 +104,6 @@ extern "C" {
 		}
 
 		delete_linear_model(model);
-
 		return result;
 	}
 

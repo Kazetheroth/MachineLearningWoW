@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DefaultNamespace;
 using Games.Global.Weapons;
+using UnityEditor;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -18,6 +19,56 @@ public class MachineLearningController : MonoBehaviour
     private List<GameObject> activateGameObjects;
 
     private TestCaseParameters simulateTestCaseParameters;
+
+    public List<double> images;
+    public int nbPixelInImage;
+    
+    public void LoadImages()
+    {
+        images = new List<double>();
+
+        Texture2D white = Resources.Load<Texture2D>("white");
+        nbPixelInImage = white.GetPixels().Length;
+        foreach (Color pixel in white.GetPixels())
+        {
+            images.Add(pixel.r);
+            images.Add(pixel.g);
+            images.Add(pixel.b);
+        }
+
+        Texture2D black = Resources.Load<Texture2D>("black");
+        foreach (Color pixel in black.GetPixels())
+        {
+            images.Add(pixel.r);
+            images.Add(pixel.g);
+            images.Add(pixel.b);
+            images.Add(pixel.r);
+            images.Add(pixel.g);
+            images.Add(pixel.b);
+            images.Add(pixel.r);
+            images.Add(pixel.g);
+            images.Add(pixel.b);
+        }
+
+        foreach (Color pixel in white.GetPixels())
+        {
+            images.Add(pixel.r);
+            images.Add(pixel.g);
+            images.Add(pixel.b);
+        }
+    }
+
+    public void CiomputeImage()
+    {
+        if (images == null)
+        {
+            return;
+        }
+
+        List<double> output = new List<double> {1, 0, 0, 0, 1};
+
+        RBFController.TrainRBFodel(this, images, nbPixelInImage, output);
+    }
 
     private void Update()
     {

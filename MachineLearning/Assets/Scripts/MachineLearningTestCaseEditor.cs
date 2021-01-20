@@ -25,6 +25,16 @@ namespace DefaultNamespace
             {
                 mlc.SimulateResultTest();
             }
+
+            if (GUILayout.Button("Load images"))
+            {
+                mlc.LoadImages();
+            }
+            
+            if (GUILayout.Button("CIOMPUTE images"))
+            {
+                mlc.CiomputeImage();
+            }
         }
     }
 }
