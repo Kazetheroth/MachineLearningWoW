@@ -27,13 +27,13 @@ public:
 
 private:
 	vector<vector<double>> inputs;
-	vector<double> classes;
+	vector<double> outputs;
 	int numberOfCentroids;
 	int numberOfClasses;
 	int maxIterationsInKMeans;
 	KMeans kMeans;
 	double accuracy;
 	vector<vector<double>> testInputs;
-	vector<double> testClasses;
+	vector<double> testOutputs;
 };
 

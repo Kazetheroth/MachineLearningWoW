@@ -26,14 +26,18 @@ float Utils::getDistance(vector<double> x1, vector<double> x2) {
 }
 
 vector<vector<double>> Utils::convert_to_one_hot(vector<double> vec, int numberOfClasses) {
+	cout << "one hot" << endl;
 	vector<vector<double>> A;
 
-	for (int i = 0; i < vec.size(); i++)
+	cout << "size " << vec.size() << endl;
+	for (int i = 0; i < vec.size(); ++i)
 	{
 		vector<double> row(numberOfClasses, 0.0);
+		cout << "one hot index " << i << "vec i " << vec[i] << endl;
 		row[(int)vec[i]] = 1.0;
 		A.push_back(row);
 	}
+	cout << "one hot" << endl;
 	return A;
 }
 

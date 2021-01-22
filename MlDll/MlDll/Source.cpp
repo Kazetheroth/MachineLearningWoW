@@ -131,9 +131,10 @@ extern "C" {
 	
 	/* ====================== RBF ====================== */
 	__declspec(dllexport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroidTaMere, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila) {
+		cout << "Hey" << endl;
 		vector<double> output;
 		vector<vector<double>> entries;
-
+		cout << "Hey" << endl;
 		for (int i = 0; i < nbImages; ++i) {
 			vector<double> pixels;
 			for (int j = 0; j < XSeparation; ++j) {
@@ -147,9 +148,27 @@ extern "C" {
 			output.push_back(Y[i]);
 		}
 
-		RBF* rbf = new RBF(entries, centroidTaMere, maxClasses, maxKMeans, output, entries, output);
+		vector<double> outputTest;
+		vector<vector<double>> entriesTest;
+
+		for (int i = 0; i < nbImages; ++i) {
+			vector<double> pixels;
+			for (int j = 0; j < XSeparation; ++j) {
+				int index = (i * XSeparation) + j;
+
+				pixels.push_back(XpetiteNuanceSurLaVariable[index]);
+			}
+
+			entriesTest.push_back(pixels);
+
+			outputTest.push_back(YEtVoila[i]);
+		}
+
+		RBF* rbf = new RBF(entries, centroidTaMere, maxClasses, maxKMeans, output, entriesTest, outputTest);
+
 		rbf->TrainRBF();
-		double* result = rbf->getResult(entries,output,rbf->weights,rbf->centroids,rbf->gamma);
+
+		double* result = rbf->getResult(entriesTest,outputTest,rbf->weights,rbf->centroids,rbf->gamma);
 		
 		return result;
 	}

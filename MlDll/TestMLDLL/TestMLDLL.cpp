@@ -10,12 +10,15 @@ extern "C"
 {
     __declspec(dllimport) double* train_linear_model(double* inputs, int inputsCount, double* outputs, int outputsCount, int sampleSize, int epochs, double learningRate);
     __declspec(dllimport) double* train_mlp_model(int* neuronsPerLayer, int nplSize, double* X, double* Y, int sampleSize, int epochs, double learningRate, bool isClassification);
+    __declspec(dllimport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroidTaMere, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila);
 }
 
 int* neuronsPerLayer;
 int nplSize;
 double* X;
 double* Y;
+double* Xtest;
+double* Ytest;
 int sampleSize;
 bool isClassification = true;
 int inputsCount;
@@ -97,10 +100,24 @@ void generateParameter(TestCaseOption testCaseOption) {
         };
 
         Y = new double[4] {
-            -1,
-                1,
-                1,
-                -1
+            1,
+                2,
+                2,
+                1
+        };
+		
+		Xtest = new double[8] {
+			0, 2,
+				2, 2,
+				1, 0,
+				0, 0
+        };
+
+        Ytest = new double[4] {
+            1,
+                2,
+                2,
+                1
         };
 
         sampleSize = 4;
@@ -193,6 +210,14 @@ void generateParameter(TestCaseOption testCaseOption) {
         Y = new double[3] {
             1, 2, 3
         };
+		
+		Xtest = new double[6] {
+            0,0,2,2,4,4
+        };
+
+        Ytest = new double[3] {
+            2, 2, 2
+        };
 
         sampleSize = 3;
         break;
@@ -201,10 +226,10 @@ void generateParameter(TestCaseOption testCaseOption) {
 
 int main() 
 {
-    generateParameter(LINEAR_TRICKY_3D);
+    generateParameter(XOR);
 
     bool useLinearModel = false;
-    bool useRBF = false;
+    bool useRBF = true;
     double* result;
 
     int epochs = 1000;
@@ -212,7 +237,10 @@ int main()
 
     if (useLinearModel) {
         result = train_linear_model(X, inputsCount, Y, outputsCount, sampleSize, epochs, learningRate);
-    }
+	}
+	else if (useRBF) {
+		result = train_rbf_model(X,4,2,Y,4,3,1000, Xtest,Ytest);
+	}
     else {
         result = train_mlp_model(neuronsPerLayer, nplSize, X, Y, sampleSize, epochs, learningRate, isClassification);
     }

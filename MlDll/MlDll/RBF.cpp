@@ -5,15 +5,18 @@ RBF::RBF(vector<vector<double>> trainingInputs, int centroidsNb, int classesNb, 
 	numberOfClasses = classesNb;
 	inputs = trainingInputs;
 	maxIterationsInKMeans = maxKMeans;
-	classes = yArray;
+	outputs = yArray;
 	KMeans kMeans();
 	testInputs = pTsX;
-	testClasses = pTsY;
+	testOutputs = pTsY;
 }
 
 void RBF::TrainRBF() {
+	cout << "In train" << endl;
 	centroids = kMeans.runkMeans(inputs,numberOfCentroids,maxIterationsInKMeans);
+	cout << "In train" << endl;
 	gamma = CalculateGamma();
+	cout << "In train" << endl;
 
 	/*for (int i = 0; i < numberOfCentroids; ++i) {
 		vector<float> currentMatrix;
@@ -23,13 +26,16 @@ void RBF::TrainRBF() {
 	}*/
 	vector<vector<double>> RBF_X = GetAsRbfList(inputs, centroids, gamma);
 
-	vector<vector<double>> hot_tr_y = Utils::convert_to_one_hot(classes, numberOfClasses);
-
+	cout << "In train" << endl;
+	vector<vector<double>> hot_tr_y = Utils::convert_to_one_hot(outputs, numberOfClasses);
+	cout << "In train" << endl;
 	vector<vector<double>> RBF_X_T = Utils::matT(RBF_X);
-
+	cout << "In train" << endl;
 	weights	= Utils::matDot(Utils::matDot(Utils::invert(Utils::matDot(RBF_X_T, RBF_X)), RBF_X_T), hot_tr_y);
-
-	accuracy = getAccuracy(testInputs, testClasses, weights, centroids, gamma);
+	cout << "In train " << testInputs.size() << " " << testOutputs.size() << endl;
+	cout << "In train " << testInputs[0][0] << " " << testOutputs[0] << endl;
+	accuracy = getAccuracy(testInputs, testOutputs, weights, centroids, gamma);
+	cout << "accuracy : " << accuracy << endl;
 }
 
 double RBF::getAccuracy(vector<vector<double>> X, vector<double> y,	vector<vector<double>>w, vector<vector<double>>centroids, double gamma) {
@@ -86,15 +92,17 @@ vector<vector<double>> RBF::GetAsRbfList(vector<vector<double>> X, vector<vector
 }
 
 float RBF::CalculateGamma() {
+	cout << "calc gamma" << endl;
 	float maxDist = 0;
 	for (int i = 0; i < numberOfCentroids; ++i) {
-		for (int j = 0; j < numberOfCentroids; ++i) {
+		for (int j = 0; j < numberOfCentroids; ++j) {
 			float currentDist = Utils::getDistance(centroids[i], centroids[j]);
 			if (currentDist > maxDist) {
 				maxDist = currentDist;
 			}
 		}
 	}
+	cout << "calc gamma" << endl;
 
 	return sqrt(2 * numberOfCentroids) / maxDist;
 }
