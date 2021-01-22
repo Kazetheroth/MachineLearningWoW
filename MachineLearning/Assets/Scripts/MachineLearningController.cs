@@ -22,6 +22,7 @@ public class MachineLearningController : MonoBehaviour
 
     public List<double> images;
     public int nbPixelInImage;
+    public int nbImages;
     
     public void LoadImages()
     {
@@ -29,6 +30,7 @@ public class MachineLearningController : MonoBehaviour
 
         Texture2D white = Resources.Load<Texture2D>("white");
         nbPixelInImage = white.GetPixels().Length;
+        nbImages = 2;
         foreach (Color pixel in white.GetPixels())
         {
             images.Add(pixel.r);
@@ -65,9 +67,10 @@ public class MachineLearningController : MonoBehaviour
             return;
         }
 
-        List<double> output = new List<double> {1, 0, 0, 0, 1};
+        //List<double> output = new List<double> {1, 0, 0, 0, 1};
+        TestCaseParameters test = MachineLearningTestCase.GetTestOption(TestCaseOption.XOR);
 
-        RBFController.TrainRBFodel(this, images, nbPixelInImage, output);
+        RBFController.TrainRBFodel(this, test.X, test.neuronsPerLayer[0],test.sampleSize , test.Y);
     }
 
     private void Update()

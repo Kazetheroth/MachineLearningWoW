@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class RBFController
 {
-    public static void TrainRBFodel(MachineLearningController controller, List<double> images, int nbPixelInImage, List<double> output)
+    public static void TrainRBFodel(MachineLearningController controller, List<double> images, int nbPixelInImage, int nbImages, List<double> output)
     {
         IntPtr rawResut;
         rawResut = CppImporter.trainRBFModel(
-            images.ToArray(), 
-            nbPixelInImage, 
+            images.ToArray(),
+            nbImages,
+            nbPixelInImage,
             output.ToArray(), 
+            4, 
             3, 
-            2, 
             1000, 
             images.ToArray(), 
             output.ToArray());
@@ -22,6 +24,10 @@ public class RBFController
         Marshal.Copy(rawResut, result, 0, output.Count);
         
         Debug.Log("Result mothafucka");
-        Debug.Log(result);
+        Debug.Log(result.ToList().Count);
+        foreach (var data in result)
+        {
+            Debug.Log(data);
+        }
     }
 }

@@ -27,6 +27,6 @@ public static class CppImporter
     public static extern System.IntPtr trainLinearModel(double[] X, int inputCount, double[] Y, int outputCount, int sampleSize, int epochs, double learningRate, bool isClassification);
 
     [DllImport("MlDll", EntryPoint = "train_rbf_model")]
-    public static extern System.IntPtr trainRBFModel(double[] X, int nbPixelInImage, double[] Y, int nbCentroid, int nbClasses, int maxKmeans,
+    public static extern System.IntPtr trainRBFModel(double[] X, int nbImages, int nbPixelInImage, double[] Y, int nbCentroid, int nbClasses, int maxKmeans,
         double[] testX, double[] testY);
 }

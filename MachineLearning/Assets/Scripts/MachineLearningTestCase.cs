@@ -80,7 +80,7 @@ namespace DefaultNamespace
                         neuronsPerLayer = new List<int> {2, 3, 1},
                         nplSize = 3,
                         X = new List<double> {0, 0, 0, 1, 1, 0, 1, 1},
-                        Y = new List<double> {-1, 1, 1, -1},
+                        Y = new List<double> {1, 2, 2, 1},
                         sampleSize = 4,
                         isClassification = true
                     };
