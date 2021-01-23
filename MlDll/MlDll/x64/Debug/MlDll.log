@@ -1,5 +1,6 @@
 ﻿  Source.cpp
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\Utils.h(19,2): warning C4091: 'static ' : ignoré à gauche de 'Utils' quand aucune variable n'est déclarée
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\Source.cpp(14,13): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\Source.cpp(56,13): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
-  MlDll.vcxproj -> D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\x64\Debug\MlDll.dll
+C:\Users\Hugo\Documents\MachineLearningWoW\MlDll\MlDll\Utils.h(19,2): warning C4091: 'static ' : ignoré à gauche de 'Utils' quand aucune variable n'est déclarée
+C:\Users\Hugo\Documents\MachineLearningWoW\MlDll\MlDll\Source.cpp(14,13): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
+C:\Users\Hugo\Documents\MachineLearningWoW\MlDll\MlDll\Source.cpp(56,13): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
+C:\Users\Hugo\Documents\MachineLearningWoW\MlDll\MlDll\Source.cpp(171,98): warning C4267: 'argument' : conversion de 'size_t' en 'int', perte possible de données
+  MlDll.vcxproj -> C:\Users\Hugo\Documents\MachineLearningWoW\MlDll\x64\Debug\MlDll.dll

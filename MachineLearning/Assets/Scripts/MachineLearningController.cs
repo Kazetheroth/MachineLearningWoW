@@ -21,16 +21,17 @@ public class MachineLearningController : MonoBehaviour
     private TestCaseParameters simulateTestCaseParameters;
 
     public List<double> images;
+    public List<double> imageOutputs;
     public int nbPixelInImage;
-    public int nbImages;
     
-    public void LoadImages()
+    public void LoadImagesSimple()
     {
         images = new List<double>();
+        imageOutputs = new List<double>();
 
-        Texture2D white = Resources.Load<Texture2D>("white");
+        Texture2D white = Resources.Load<Texture2D>("train/druid/DruidElf_1");
         nbPixelInImage = white.GetPixels().Length;
-        nbImages = 2;
+        Debug.Log(nbPixelInImage);
         foreach (Color pixel in white.GetPixels())
         {
             images.Add(pixel.r);
@@ -38,7 +39,7 @@ public class MachineLearningController : MonoBehaviour
             images.Add(pixel.b);
         }
 
-        Texture2D black = Resources.Load<Texture2D>("black");
+        /*Texture2D black = Resources.Load<Texture2D>("black");
         foreach (Color pixel in black.GetPixels())
         {
             images.Add(pixel.r);
@@ -57,7 +58,35 @@ public class MachineLearningController : MonoBehaviour
             images.Add(pixel.r);
             images.Add(pixel.g);
             images.Add(pixel.b);
+        }*/
+    }
+    public void LoadImagesClasses()
+    {
+        images = new List<double>();
+        imageOutputs = new List<double>();
+
+        Texture2D[] druids = Resources.LoadAll<Texture2D>("train/druid");
+        nbPixelInImage = druids[0].GetPixels().Length;
+        foreach (var image in druids)
+        {
+            imageOutputs.Add(0);
+            foreach (Color pixel in image.GetPixels())
+            {
+                images.Add(pixel.r);
+            }
         }
+        
+        Texture2D[] paladins = Resources.LoadAll<Texture2D>("train/paladin");
+        nbPixelInImage = paladins[0].GetPixels().Length;
+        foreach (var image in paladins)
+        {
+            imageOutputs.Add(1);
+            foreach (Color pixel in image.GetPixels())
+            {
+                images.Add(pixel.r);
+            }
+        }
+        Debug.Log("done");
     }
 
     public void CiomputeImage()
@@ -67,10 +96,15 @@ public class MachineLearningController : MonoBehaviour
             return;
         }
 
-        //List<double> output = new List<double> {1, 0, 0, 0, 1};
-        TestCaseParameters test = MachineLearningTestCase.GetTestOption(TestCaseOption.XOR);
-
-        RBFController.TrainRBFodel(this, test.X, test.neuronsPerLayer[0],test.sampleSize , test.Y);
+        //List<double> output = new List<double> {0, 1, 1, 1, 0};
+        //TestCaseParameters test = MachineLearningTestCase.GetTestOption(TestCaseOption.ImagesTest);
+        
+        foreach (var output in imageOutputs)
+        {
+            Debug.Log(output);
+        }
+        RBFController.TrainRBFodel(this, images, nbPixelInImage,30 , imageOutputs, 8,2,100,0.01f);
+        //RBFController.TrainRBFodel(this, test.X, test.nplSize,test.sampleSize , test.Y, 2,2,100,0.1f);
     }
 
     private void Update()

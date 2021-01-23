@@ -1,3 +1,1 @@
-﻿  TestMLDLL.cpp
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\TestMLDLL\TestMLDLL.cpp(36,15): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
-  TestMLDLL.vcxproj -> D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\x64\Debug\TestMLDLL.exe
+﻿  TestMLDLL.vcxproj -> C:\Users\Hugo\Documents\MachineLearningWoW\MlDll\x64\Debug\TestMLDLL.exe

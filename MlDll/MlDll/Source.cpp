@@ -130,7 +130,7 @@ extern "C" {
 	}
 	
 	/* ====================== RBF ====================== */
-	__declspec(dllexport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroidTaMere, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila) {
+	__declspec(dllexport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroidTaMere, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila, float gamma) {
 		cout << "Hey" << endl;
 		vector<double> output;
 		vector<vector<double>> entries;
@@ -164,11 +164,97 @@ extern "C" {
 			outputTest.push_back(YEtVoila[i]);
 		}
 
-		RBF* rbf = new RBF(entries, centroidTaMere, maxClasses, maxKMeans, output, entriesTest, outputTest);
+		RBF* rbf = new RBF(entries, centroidTaMere, maxClasses, maxKMeans, output, entriesTest, outputTest, gamma);
 
-		rbf->TrainRBF();
+		rbf->TrainRBFWhole();
 
-		double* result = rbf->getResult(entriesTest,outputTest,rbf->weights,rbf->centroids,rbf->gamma);
+		double* result = rbf->getResult(entriesTest,outputTest.size(),rbf->weights,rbf->centroids,gamma);
+		
+		return result;
+	}
+	__declspec(dllexport) double* train_rbf_model_get_weights(double* X, int nbImages, int XSeparation, double* Y, int nbCentroid, int maxClasses, float gamma, double* pCentroids) {
+		vector<double> output;
+		vector<vector<double>> entries;
+		vector<vector<double>> centroids;
+		for (int i = 0; i < nbImages; ++i) {
+			vector<double> pixels;
+			for (int j = 0; j < XSeparation; ++j) {
+				int index = (i * XSeparation) + j;
+				pixels.push_back(X[index]);
+			}
+
+			entries.push_back(pixels);
+
+			output.push_back(Y[i]);
+		}
+		for (int i = 0; i < nbCentroid; ++i) {
+			vector<double> pixels;
+			for (int j = 0; j < XSeparation; ++j) {
+				int index = (i * XSeparation) + j;
+				pixels.push_back(pCentroids[index]);
+			}
+			centroids.push_back(pixels);
+		}
+
+		RBF* rbf = new RBF(entries,output,centroids,gamma, maxClasses);
+
+		double* result = rbf->trainWeights();
+		
+		return result;
+	}
+	
+	__declspec(dllexport) double* train_rbf_model_get_centroids(double* X, int nbImages, int XSeparation, int nbCentroid, int maxKmeans) {
+		vector<vector<double>> entries;
+		for (int i = 0; i < nbImages; ++i) {
+			vector<double> pixels;
+			for (int j = 0; j < XSeparation; ++j) {
+				int index = (i * XSeparation) + j;
+				pixels.push_back(X[index]);
+			}
+			entries.push_back(pixels);
+		}
+
+		RBF* rbf = new RBF(entries,nbCentroid,maxKmeans);
+
+		double* result = rbf->getCentroids();
+		
+		return result;
+	}
+	
+	__declspec(dllexport) double* get_rbf_result(double* X, int nbImages, int XSeparation, double* pCentroids, int nbCentroid, double* pWeights, int nbWeight, float gamma) {
+		vector<vector<double>> entries;
+		vector<vector<double>> weights;
+		vector<vector<double>> centroids;
+		for (int i = 0; i < nbImages; ++i) {
+			vector<double> pixels;
+			for (int j = 0; j < XSeparation; ++j) {
+				int index = (i * XSeparation) + j;
+				pixels.push_back(X[index]);
+			}
+			entries.push_back(pixels);
+		}
+
+		for (int i = 0; i < nbCentroid; ++i) {
+			vector<double> pixels;
+			for (int j = 0; j < XSeparation; ++j) {
+				int index = (i * XSeparation) + j;
+				pixels.push_back(pCentroids[index]);
+			}
+			centroids.push_back(pixels);
+		}
+		
+		for (int i = 0; i < nbWeight ; ++i) {
+			vector<double> pixels;
+			for (int j = 0; j < XSeparation; ++j) {
+				int index = (i * XSeparation) + j;
+				pixels.push_back(pWeights[index]);
+			}
+			centroids.push_back(pixels);
+		}
+
+		RBF* rbf = new RBF();
+
+		double* result = rbf->getResult(entries,nbImages,weights,centroids,gamma);
 		
 		return result;
 	}

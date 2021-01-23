@@ -18,7 +18,8 @@ namespace DefaultNamespace
         NON_LINEAR_SIMPLE_2D,
         LINEAR_SIMPLE_3D,
         LINEAR_TRICKY_3D,
-        NON_LINEAR_SIMPLE_3D
+        NON_LINEAR_SIMPLE_3D,
+        ImagesTest
     }
     
     public class TestCaseParameters
@@ -29,6 +30,10 @@ namespace DefaultNamespace
         public List<double> Y;
         public int sampleSize;
         public bool isClassification;
+        public int nbCentroids;
+        public int nbClasses;
+        public int maxKmeans;
+        public float gamma;
     }
 
     public static class MachineLearningTestCase
@@ -241,6 +246,32 @@ namespace DefaultNamespace
                         Y = new List<double> {2, 1, -2, -1},
                         sampleSize = 4,
                         isClassification = false
+                    };
+                case TestCaseOption.ImagesTest:
+                    return new TestCaseParameters
+                    {
+                        neuronsPerLayer = new List<int> {2, 3, 1},
+                        nplSize = 12,
+                        X = new List<double> {
+                            255,255,255,255,255,255,255,255,255,255,255,255,
+                            0,0,0,0,0,0,0,0,0,0,0,0,
+                            0,0,0,0,0,0,0,0,0,0,0,0,
+                            0,0,0,0,0,0,0,0,0,0,0,0,
+                            255,255,255,255,255,255,255,255,255,255,255,255
+                        },
+                        Y = new List<double> {
+                            0,
+                            1,
+                            1,
+                            1,
+                            0
+                        },
+                        sampleSize = 5,
+                        isClassification = true,
+                        nbCentroids = 2,
+                        nbClasses = 2,
+                        maxKmeans = 100,
+                        gamma = 100000f
                     };
             }
 

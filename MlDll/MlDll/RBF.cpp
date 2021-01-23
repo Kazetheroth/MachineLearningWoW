@@ -1,21 +1,40 @@
 #include "RBF.h"
 
-RBF::RBF(vector<vector<double>> trainingInputs, int centroidsNb, int classesNb, int maxKMeans, vector<double> yArray, vector<vector<double>> pTsX, vector<double> pTsY) {
+RBF::RBF() {
+
+}
+RBF::RBF(vector<vector<double>> trainingInputs, int centroidsNb, int classesNb, int maxKMeans, vector<double> yArray, vector<vector<double>> testX, vector<double> testY, float pGamma) {
 	numberOfCentroids = centroidsNb;
 	numberOfClasses = classesNb;
 	inputs = trainingInputs;
 	maxIterationsInKMeans = maxKMeans;
 	outputs = yArray;
 	KMeans kMeans();
-	testInputs = pTsX;
-	testOutputs = pTsY;
+	testInputs = testX;
+	testOutputs = testY;
+	gamma = pGamma;
 }
 
-void RBF::TrainRBF() {
+RBF::RBF(vector<vector<double>> trainingInputs, vector<double> yArray, vector<vector<double>> pCentroids, float pGamma, int classesNb) {
+	centroids = pCentroids;
+	numberOfClasses = classesNb;
+	inputs = trainingInputs;
+	outputs = yArray;
+	KMeans kMeans();
+	gamma = pGamma;
+}
+RBF::RBF(vector<vector<double>> trainingInputs, int centroidsNb, int maxKMeans) {
+	numberOfCentroids = centroidsNb;
+	inputs = trainingInputs;
+	maxIterationsInKMeans = maxKMeans;
+	KMeans kMeans();
+}
+
+void RBF::TrainRBFWhole() {
 	cout << "In train" << endl;
 	centroids = kMeans.runkMeans(inputs,numberOfCentroids,maxIterationsInKMeans);
 	cout << "In train" << endl;
-	gamma = CalculateGamma();
+	gamma = 0.000001f;
 	cout << "In train" << endl;
 
 	/*for (int i = 0; i < numberOfCentroids; ++i) {
@@ -38,6 +57,36 @@ void RBF::TrainRBF() {
 	cout << "accuracy : " << accuracy << endl;
 }
 
+double* RBF::trainWeights(){
+	vector<vector<double>> RBF_X = GetAsRbfList(inputs, centroids, gamma);
+	vector<vector<double>> hot_tr_y = Utils::convert_to_one_hot(outputs, numberOfClasses);
+	vector<vector<double>> RBF_X_T = Utils::matT(RBF_X);
+
+	weights = Utils::matDot(Utils::matDot(Utils::invert(Utils::matDot(RBF_X_T, RBF_X)), RBF_X_T), hot_tr_y);
+	
+	double* result = new double[weights.size()*weights[0].size()];
+	for (int i = 0; i < weights.size();++i) {
+		int maxJ = weights[i].size();
+		for (int j = 0; j < maxJ;++j) {
+			result[i * maxJ + j] = weights[i][j];
+		}
+	}
+
+	return result;
+}
+
+double* RBF::getCentroids(){
+	centroids = kMeans.runkMeans(inputs, numberOfCentroids, maxIterationsInKMeans);
+	double* result = new double[centroids.size() * centroids[0].size()];
+	for (int i = 0; i < centroids.size(); ++i) {
+		int maxJ = centroids[i].size();
+		for (int j = 0; j < maxJ; ++j) {
+			result[i * maxJ + j] = centroids[i][j];
+		}
+	}
+	return result;
+}
+
 double RBF::getAccuracy(vector<vector<double>> X, vector<double> y,	vector<vector<double>>w, vector<vector<double>>centroids, double gamma) {
 	vector<vector<double>> ts_rbf_list = GetAsRbfList(X, centroids, gamma);
 	vector<vector<double>> pred_test_y_one_hot = Utils::matDot(ts_rbf_list, w);
@@ -56,12 +105,11 @@ double RBF::getAccuracy(vector<vector<double>> X, vector<double> y,	vector<vecto
 
 }
 
-double* RBF::getResult(vector<vector<double>> X, vector<double> y,	vector<vector<double>>w, vector<vector<double>>centroids, double gamma) {
+double* RBF::getResult(vector<vector<double>> X, int outputSize, vector<vector<double>>w, vector<vector<double>>centroids, double gamma) {
 	vector<vector<double>> ts_rbf_list = GetAsRbfList(X, centroids, gamma);
 	vector<vector<double>> pred_test_y_one_hot = Utils::matDot(ts_rbf_list, w);
 	vector<double> pred_test_y;
-	int ySize = y.size();
-	double* predResult = new double[ySize];
+	double* predResult = new double[outputSize];
 	int loop = 0;
 	for (vector<double> row : pred_test_y_one_hot) {
 		pred_test_y.push_back(Utils::argMax(row));
@@ -74,12 +122,10 @@ double* RBF::getResult(vector<vector<double>> X, vector<double> y,	vector<vector
 
 double RBF::GetRbf(vector<double> x, vector<double> c, double s) {
 	double distance = Utils::getDistance(x, c);
-	return 1 / exp(-distance / (s * s));
+	return exp(s * (distance * distance));
 }
 
 vector<vector<double>> RBF::GetAsRbfList(vector<vector<double>> X, vector<vector<double>> centroids, double std) {
-
-	// get RBFs
 	vector<vector<double>> rbf_list;
 	for (vector<double> x : X) {
 		vector<double> rbf_row;

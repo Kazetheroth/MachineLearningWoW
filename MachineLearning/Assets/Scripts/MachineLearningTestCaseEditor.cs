@@ -28,7 +28,8 @@ namespace DefaultNamespace
 
             if (GUILayout.Button("Load images"))
             {
-                mlc.LoadImages();
+                //mlc.LoadImagesSimple();
+                mlc.LoadImagesClasses();
             }
             
             if (GUILayout.Button("CIOMPUTE images"))

@@ -10,7 +10,7 @@ extern "C"
 {
     __declspec(dllimport) double* train_linear_model(double* inputs, int inputsCount, double* outputs, int outputsCount, int sampleSize, int epochs, double learningRate);
     __declspec(dllimport) double* train_mlp_model(int* neuronsPerLayer, int nplSize, double* X, double* Y, int sampleSize, int epochs, double learningRate, bool isClassification);
-    __declspec(dllimport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroidTaMere, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila);
+    __declspec(dllimport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroidTaMere, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila, float gamma);
 }
 
 int* neuronsPerLayer;
@@ -23,6 +23,10 @@ int sampleSize;
 bool isClassification = true;
 int inputsCount;
 int outputsCount;
+int nbClasses;
+int xSeparation;
+int nbCentroids;
+float gamma;
 
 enum TestCaseOption
 {
@@ -32,7 +36,8 @@ enum TestCaseOption
     CROSS,
     MULTI_CROSS,
     LINEAR_SIMPLE_2D,
-    LINEAR_TRICKY_3D
+    LINEAR_TRICKY_3D,
+	ImagesTest
 };
 
 void generateParameter(TestCaseOption testCaseOption) {
@@ -100,10 +105,10 @@ void generateParameter(TestCaseOption testCaseOption) {
         };
 
         Y = new double[4] {
-            1,
-                2,
-                2,
-                1
+            0,
+                1,
+                1,
+                0
         };
 		
 		Xtest = new double[8] {
@@ -114,13 +119,17 @@ void generateParameter(TestCaseOption testCaseOption) {
         };
 
         Ytest = new double[4] {
-            1,
-                2,
-                2,
-                1
+            0,
+                1,
+                1,
+                0
         };
 
-        sampleSize = 4;
+		sampleSize = 4;
+		nbClasses = 2;
+		nbCentroids = 4;
+		xSeparation = 2;
+		gamma = 1;
         break;
     case CROSS:
         break;
@@ -221,25 +230,74 @@ void generateParameter(TestCaseOption testCaseOption) {
 
         sampleSize = 3;
         break;
+
+	case ImagesTest:
+		neuronsPerLayer = new int[3]{
+			2, 3, 1
+		};
+
+		nplSize = 3;
+		inputsCount = 2;
+		outputsCount = 1;
+
+		X = new double[60]{
+			255,255,255,255,255,255,255,255,255,255,255,255,
+			0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,
+			255,255,255,255,255,255,255,255,255,255,255,255
+
+		};
+
+		Y = new double[5]{
+			0,
+				1,
+				1,
+				1,
+				0
+		};
+
+		Xtest = new double[60]{
+			255,255,255,255,255,255,255,255,255,255,255,255,
+			0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,
+			255,255,255,255,255,255,255,255,255,255,255,255
+		};
+
+		Ytest = new double[5]{
+			0,
+				1,
+				1,
+				1,
+				0
+		};
+
+		sampleSize = 5;
+		nbClasses = 2;
+		nbCentroids = 2;
+		xSeparation = 12;
+		gamma = 1;
+		break;
     }
 }
 
 int main() 
 {
-    generateParameter(XOR);
+    generateParameter(ImagesTest);
 
     bool useLinearModel = false;
     bool useRBF = true;
     double* result;
 
-    int epochs = 1000;
+    int epochs = 100;
     double learningRate = 0.1;
 
     if (useLinearModel) {
         result = train_linear_model(X, inputsCount, Y, outputsCount, sampleSize, epochs, learningRate);
 	}
 	else if (useRBF) {
-		result = train_rbf_model(X,4,2,Y,4,3,1000, Xtest,Ytest);
+		result = train_rbf_model(X,sampleSize,xSeparation,Y,nbCentroids,nbClasses,epochs, Xtest,Ytest,gamma);
 	}
     else {
         result = train_mlp_model(neuronsPerLayer, nplSize, X, Y, sampleSize, epochs, learningRate, isClassification);

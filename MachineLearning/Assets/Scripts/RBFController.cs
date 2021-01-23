@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class RBFController
 {
-    public static void TrainRBFodel(MachineLearningController controller, List<double> images, int nbPixelInImage, int nbImages, List<double> output)
+    public static void TrainRBFodel(MachineLearningController controller, List<double> images, int nbPixelInImage,
+        int nbImages, List<double> output, int nbCentroid, int nbClasses, int maxKmeans, float gamma)
     {
         IntPtr rawResut;
         rawResut = CppImporter.trainRBFModel(
@@ -14,11 +15,12 @@ public class RBFController
             nbImages,
             nbPixelInImage,
             output.ToArray(), 
-            4, 
-            3, 
-            1000, 
+            nbCentroid, 
+            nbClasses, 
+            maxKmeans, 
             images.ToArray(), 
-            output.ToArray());
+            output.ToArray(),
+            gamma);
 
         double[] result = new double[output.Count];
         Marshal.Copy(rawResut, result, 0, output.Count);

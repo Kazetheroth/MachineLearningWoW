@@ -36,7 +36,7 @@ vector<vector<double>> KMeans::runkMeans(vector<vector<double>> X, int k, int ma
 	
 	while (iterations < maxIterations) {
 		for (int i = 0; i < X.size(); ++i) {
-			float minDist = 1000;
+			float minDist = 100000000;
 			int currentIndex = -1;
 			for (int j = 0; j < k; ++j) {
 				float currentDist = Utils::getDistance(X[i], centroids[j]);
@@ -51,13 +51,23 @@ vector<vector<double>> KMeans::runkMeans(vector<vector<double>> X, int k, int ma
 		}
 
 		bool shouldBreak = false;
-		for (int i = 0; i < k; ++i) {
-			copy(centroids.begin(), centroids.end(), back_inserter(oldCentroids));
-			centroids[i] = getAveragePointInCluster(clusters[i]);
-			/*if (std::equal(centroids.begin(), centroids().end(), oldCentroids.begin())) {
-				shouldBreak = true;
-			}*/
-		}
+		//for (int i = 0; i < k; ++i) {
+		//	copy(centroids.begin(), centroids.end(), back_inserter(oldCentroids));
+		//	centroids[i] = getAveragePointInCluster(clusters[i]);
+		//	/*if (std::equal(centroids.begin(), centroids().end(), oldCentroids.begin())) {
+		//		shouldBreak = true;
+		//	}*/
+		//	int equalCount = 0;
+		//	for (int j = 0; j < centroids.size(); ++j) {
+		//		if (std::equal(centroids[i].begin(), centroids[i].begin(), oldCentroids[i].begin())) {
+		//			++equalCount;
+		//		}
+		//	}
+		//	if (equalCount == centroids.size()) {
+		//		shouldBreak = true;
+		//		cout << "broke" << endl;
+		//	}
+		//}
 		if (shouldBreak) {
 			break;
 		}

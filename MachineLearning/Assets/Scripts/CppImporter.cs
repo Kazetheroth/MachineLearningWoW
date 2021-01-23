@@ -27,6 +27,15 @@ public static class CppImporter
     public static extern System.IntPtr trainLinearModel(double[] X, int inputCount, double[] Y, int outputCount, int sampleSize, int epochs, double learningRate, bool isClassification);
 
     [DllImport("MlDll", EntryPoint = "train_rbf_model")]
-    public static extern System.IntPtr trainRBFModel(double[] X, int nbImages, int nbPixelInImage, double[] Y, int nbCentroid, int nbClasses, int maxKmeans,
-        double[] testX, double[] testY);
+    public static extern System.IntPtr trainRBFModel(double[] X, int nbImages, int nbPixelInImage, double[] Y, int nbCentroid, int nbClasses, int maxKmeans, double[] testX, double[] testY, float gamma);
+    
+    [DllImport("MlDll", EntryPoint = "train_rbf_model_get_centroids")]
+    public static extern System.IntPtr trainRBFModelGetCentroids(double[] X, int nbImages, int nbPixelInImage, int nbCentroid, int maxKmeans);
+    
+    [DllImport("MlDll", EntryPoint = "train_rbf_model_get_weigths")]
+    public static extern System.IntPtr trainRBFModel(double[] X, int nbImages, int nbPixelInImage, double[] Y, int nbCentroid, int nbClasses, int maxKmeans, float gamma, double[] centroids);
+    
+    [DllImport("MlDll", EntryPoint = "get_rbf_result")]
+    public static extern System.IntPtr trainRBFModel(double[] X, int nbImages, int nbPixelInImage, double[] Y,double[] centroids, int nbCentroid, int nbClasses, double[] weights, int nbWeights, float gamma);
+
 }
