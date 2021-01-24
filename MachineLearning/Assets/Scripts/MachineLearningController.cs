@@ -62,10 +62,11 @@ public class MachineLearningController : MonoBehaviour
     }
     public void LoadImagesClasses()
     {
+        Debug.Log("Load Images");
         images = new List<double>();
         imageOutputs = new List<double>();
 
-        Texture2D[] druids = Resources.LoadAll<Texture2D>("train/druid");
+        Texture2D[] druids = Resources.LoadAll<Texture2D>("train/druid32x32");
         nbPixelInImage = druids[0].GetPixels().Length;
         foreach (var image in druids)
         {
@@ -76,7 +77,7 @@ public class MachineLearningController : MonoBehaviour
             }
         }
         
-        Texture2D[] paladins = Resources.LoadAll<Texture2D>("train/paladin");
+        Texture2D[] paladins = Resources.LoadAll<Texture2D>("train/paladin32x32");
         nbPixelInImage = paladins[0].GetPixels().Length;
         foreach (var image in paladins)
         {
@@ -91,7 +92,8 @@ public class MachineLearningController : MonoBehaviour
 
     public void CiomputeImage()
     {
-        if (images == null)
+        Debug.Log("Start Compiute Images");
+        if (images == null && images.Count > 0)
         {
             return;
         }
@@ -99,12 +101,24 @@ public class MachineLearningController : MonoBehaviour
         //List<double> output = new List<double> {0, 1, 1, 1, 0};
         //TestCaseParameters test = MachineLearningTestCase.GetTestOption(TestCaseOption.ImagesTest);
         
-        foreach (var output in imageOutputs)
-        {
-            Debug.Log(output);
-        }
-        RBFController.TrainRBFodel(this, images, nbPixelInImage,30 , imageOutputs, 8,2,100,0.01f);
+        RBFController.TrainRBFodel(this, images, nbPixelInImage,30 , imageOutputs, 30,2,1000,0.01f);
         //RBFController.TrainRBFodel(this, test.X, test.nplSize,test.sampleSize , test.Y, 2,2,100,0.1f);
+    }
+
+    public void GenerateWeights()
+    {
+        Debug.Log("Start Generate weights");
+        if (images == null && images.Count > 0)
+        {
+            return;
+        }
+
+        //List<double> output = new List<double> {0, 1, 1, 1, 0};
+        //TestCaseParameters test = MachineLearningTestCase.GetTestOption(TestCaseOption.ImagesTest);
+
+        RBFController.StartGenerationRBFModel(this, images, nbPixelInImage,30 , imageOutputs, 4,2,100,0.01f);
+        //RBFController.TrainRBFodel(this, test.X, test.nplSize,test.sampleSize , test.Y, 2,2,100,0.1f);
+        
     }
 
     private void Update()
@@ -195,6 +209,10 @@ public class MachineLearningController : MonoBehaviour
 
     public void ResetSphere()
     {
+        images?.Clear();
+        imageOutputs?.Clear();
+        nbPixelInImage = 0;
+        
         if (activateGameObjects == null)
         {
             return;

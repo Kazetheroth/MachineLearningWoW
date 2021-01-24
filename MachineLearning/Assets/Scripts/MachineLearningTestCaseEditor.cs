@@ -36,6 +36,11 @@ namespace DefaultNamespace
             {
                 mlc.CiomputeImage();
             }
+            
+            if (GUILayout.Button("Generate and save rbf model"))
+            {
+                mlc.GenerateWeights();
+            }
         }
     }
 }

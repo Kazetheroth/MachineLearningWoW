@@ -33,9 +33,9 @@ public static class CppImporter
     public static extern System.IntPtr trainRBFModelGetCentroids(double[] X, int nbImages, int nbPixelInImage, int nbCentroid, int maxKmeans);
     
     [DllImport("MlDll", EntryPoint = "train_rbf_model_get_weigths")]
-    public static extern System.IntPtr trainRBFModel(double[] X, int nbImages, int nbPixelInImage, double[] Y, int nbCentroid, int nbClasses, int maxKmeans, float gamma, double[] centroids);
+    public static extern System.IntPtr trainRbfModelGetWeigths(double[] X, int nbImages, int nbPixelInImage, double[] Y, int nbCentroid, int nbClasses, int maxKmeans, float gamma, double[] centroids);
     
     [DllImport("MlDll", EntryPoint = "get_rbf_result")]
-    public static extern System.IntPtr trainRBFModel(double[] X, int nbImages, int nbPixelInImage, double[] Y,double[] centroids, int nbCentroid, int nbClasses, double[] weights, int nbWeights, float gamma);
+    public static extern System.IntPtr getRbfResult(double[] X, int nbImages, int nbPixelInImage, double[] Y,double[] centroids, int nbCentroid, int nbClasses, double[] weights, int nbWeights, float gamma);
 
 }
