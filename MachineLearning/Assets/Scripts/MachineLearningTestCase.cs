@@ -327,8 +327,8 @@ public static class MachineLearningTestCase
                     isClassification = true,
                     nbCentroids = 2,
                     nbClasses = 2,
-                    maxKmeans = 100,
-                    gamma = 100000f
+                    maxKmeans = 1000,
+                    gamma = 0.1f
                 };
             case TestCaseOption.USE_IMAGES:
                 return new TestCaseParameters
@@ -339,7 +339,7 @@ public static class MachineLearningTestCase
                     isClassification = true,
                     nbCentroids = 2,
                     nbClasses = 2,
-                    maxKmeans = 100,
+                    maxKmeans = 1000,
                     gamma = 100000f
                 };
         }

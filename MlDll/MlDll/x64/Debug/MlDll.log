@@ -1,9 +1,3 @@
-﻿  RBF.cpp
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\Utils.h(19,2): warning C4091: 'static ' : ignoré à gauche de 'Utils' quand aucune variable n'est déclarée
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\RBF.cpp(12,9): warning C4930: 'KMeans kMeans(void)' : fonction prototypée non appelée (était-ce la définition de variable souhaitée ?)
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\RBF.cpp(23,9): warning C4930: 'KMeans kMeans(void)' : fonction prototypée non appelée (était-ce la définition de variable souhaitée ?)
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\RBF.cpp(30,9): warning C4930: 'KMeans kMeans(void)' : fonction prototypée non appelée (était-ce la définition de variable souhaitée ?)
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\RBF.cpp(69,31): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\RBF.cpp(82,33): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
-D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\MlDll\RBF.cpp(153,37): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+﻿  LINK : D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\x64\Debug\MlDll.dll introuvable ou non généré par la dernière édition de liens incrémentielle ; édition de liens complète en cours
+     Création de la bibliothèque D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\x64\Debug\MlDll.lib et de l'objet D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\x64\Debug\MlDll.exp
   MlDll.vcxproj -> D:\OneDrive\Documents\ESGI_5eme_annee\machineLearning\MachineLearningWoW\MlDll\x64\Debug\MlDll.dll
