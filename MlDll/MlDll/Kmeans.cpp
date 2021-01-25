@@ -50,7 +50,7 @@ vector<vector<double>> KMeans::runkMeans(vector<vector<double>> X, int k, int ma
 			}
 		}
 
-		bool shouldBreak = false;
+		//bool shouldBreak = false;
 		//for (int i = 0; i < k; ++i) {
 		//	copy(centroids.begin(), centroids.end(), back_inserter(oldCentroids));
 		//	centroids[i] = getAveragePointInCluster(clusters[i]);
@@ -62,15 +62,15 @@ vector<vector<double>> KMeans::runkMeans(vector<vector<double>> X, int k, int ma
 		//		if (std::equal(centroids[i].begin(), centroids[i].begin(), oldCentroids[i].begin())) {
 		//			++equalCount;
 		//		}
-		//	}
+	 //		}
 		//	if (equalCount == centroids.size()) {
 		//		shouldBreak = true;
 		//		cout << "broke" << endl;
 		//	}
 		//}
-		if (shouldBreak) {
-			break;
-		}
+		//if (shouldBreak) {
+		//	break;
+		//}
 		++iterations;
 	}
 	return centroids;

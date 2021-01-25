@@ -32,15 +32,20 @@ namespace DefaultNamespace
                 mlc.LoadImagesClasses();
             }
             
-            if (GUILayout.Button("CIOMPUTE images"))
-            {
-                mlc.CiomputeImage();
-            }
+//            if (GUILayout.Button("CIOMPUTE images"))
+//            {
+//                mlc.CiomputeImage();
+//            }
+//            
+//            if (GUILayout.Button("Generate and save rbf model"))
+//            {
+//                mlc.GenerateWeights();
+//            }
             
-            if (GUILayout.Button("Generate and save rbf model"))
-            {
-                mlc.GenerateWeights();
-            }
+//            if (GUILayout.Button("Tester une image"))
+//            {
+//                mlc.ChooseImage();
+//            }
         }
     }
 }

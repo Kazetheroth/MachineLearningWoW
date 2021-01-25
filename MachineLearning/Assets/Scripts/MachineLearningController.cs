@@ -11,98 +11,95 @@ public class MachineLearningController : MonoBehaviour
 {
     [SerializeField] private ObjectPooler spherePooler;
     
-    [SerializeField] private bool useLinearModel;
     [SerializeField] private TestCaseOption testCaseOption;
+    [SerializeField] private AlgoUsed algoUsed;
     [SerializeField] private int epochs = 100000;
     [SerializeField] private double learningRate = 0.1;
+
+    [SerializeField] private double gamma = 0.1;
+    [SerializeField] private int nbCentroid = 12;
 
     private List<GameObject> activateGameObjects;
 
     private TestCaseParameters simulateTestCaseParameters;
 
-    public List<double> images;
-    public List<double> imageOutputs;
-    public int nbPixelInImage;
+    public int totalWantedImages;
+    public int totalWantedImagesToTest;
     
-    public void LoadImagesSimple()
-    {
-        images = new List<double>();
-        imageOutputs = new List<double>();
+    private List<double> images;
+    private List<double> imageOutputs;
+    private int nbPixelInImage;
+    public int nbImagesLoaded;
 
-        Texture2D white = Resources.Load<Texture2D>("train/druid/DruidElf_1");
-        nbPixelInImage = white.GetPixels().Length;
-        Debug.Log(nbPixelInImage);
-        foreach (Color pixel in white.GetPixels())
-        {
-            images.Add(pixel.r);
-            images.Add(pixel.g);
-            images.Add(pixel.b);
-        }
-
-        /*Texture2D black = Resources.Load<Texture2D>("black");
-        foreach (Color pixel in black.GetPixels())
-        {
-            images.Add(pixel.r);
-            images.Add(pixel.g);
-            images.Add(pixel.b);
-            images.Add(pixel.r);
-            images.Add(pixel.g);
-            images.Add(pixel.b);
-            images.Add(pixel.r);
-            images.Add(pixel.g);
-            images.Add(pixel.b);
-        }
-
-        foreach (Color pixel in white.GetPixels())
-        {
-            images.Add(pixel.r);
-            images.Add(pixel.g);
-            images.Add(pixel.b);
-        }*/
-    }
+    private int nbImagesToTestLoaded;
+    private List<double> imagesToTest;
+    
     public void LoadImagesClasses()
     {
         Debug.Log("Load Images");
+
+        nbImagesToTestLoaded = 0;
+        nbImagesLoaded = 0;
         images = new List<double>();
         imageOutputs = new List<double>();
+        imagesToTest = new List<double>();
 
         Texture2D[] druids = Resources.LoadAll<Texture2D>("train/druid32x32");
         nbPixelInImage = druids[0].GetPixels().Length;
+
         foreach (var image in druids)
         {
-            imageOutputs.Add(0);
-            foreach (Color pixel in image.GetPixels())
+            if (nbImagesLoaded < totalWantedImages / 2)
             {
-                images.Add(pixel.r);
+                imageOutputs.Add(0);
+                nbImagesLoaded++;
+                foreach (Color pixel in image.GetPixels())
+                {
+                    images.Add(pixel.r);
+                }
+            } else if (nbImagesToTestLoaded < totalWantedImagesToTest / 2)
+            {
+                Debug.Log("Want to find Druid");
+                nbImagesToTestLoaded++;
+                foreach (Color pixel in image.GetPixels())
+                {
+                    imagesToTest.Add(pixel.r);
+                }
+            }
+            else
+            {
+                break;
             }
         }
-        
+
         Texture2D[] paladins = Resources.LoadAll<Texture2D>("train/paladin32x32");
         nbPixelInImage = paladins[0].GetPixels().Length;
         foreach (var image in paladins)
         {
-            imageOutputs.Add(1);
-            foreach (Color pixel in image.GetPixels())
+            if (nbImagesLoaded < totalWantedImages)
             {
-                images.Add(pixel.r);
+                imageOutputs.Add(1);
+                nbImagesLoaded++;
+                foreach (Color pixel in image.GetPixels())
+                {
+                    images.Add(pixel.r);
+                }
+            } 
+            else if (nbImagesToTestLoaded < totalWantedImagesToTest)
+            {
+                Debug.Log("Want to find Paladin");
+                nbImagesToTestLoaded++;
+                foreach (Color pixel in image.GetPixels())
+                {
+                    imagesToTest.Add(pixel.r);
+                }
+            }
+            else
+            {
+                break;
             }
         }
         Debug.Log("done");
-    }
-
-    public void CiomputeImage()
-    {
-        Debug.Log("Start Compiute Images");
-        if (images == null && images.Count > 0)
-        {
-            return;
-        }
-
-        //List<double> output = new List<double> {0, 1, 1, 1, 0};
-        //TestCaseParameters test = MachineLearningTestCase.GetTestOption(TestCaseOption.ImagesTest);
-        
-        RBFController.TrainRBFodel(this, images, nbPixelInImage,30 , imageOutputs, 30,2,1000,0.01f);
-        //RBFController.TrainRBFodel(this, test.X, test.nplSize,test.sampleSize , test.Y, 2,2,100,0.1f);
     }
 
     public void GenerateWeights()
@@ -116,9 +113,8 @@ public class MachineLearningController : MonoBehaviour
         //List<double> output = new List<double> {0, 1, 1, 1, 0};
         //TestCaseParameters test = MachineLearningTestCase.GetTestOption(TestCaseOption.ImagesTest);
 
-        RBFController.StartGenerationRBFModel(this, images, nbPixelInImage,30 , imageOutputs, 4,2,100,0.01f);
+        RBFController.StartGenerationRBFModel(this, images, nbPixelInImage,nbImagesLoaded , imageOutputs, 6,2,1000,0.01f);
         //RBFController.TrainRBFodel(this, test.X, test.nplSize,test.sampleSize , test.Y, 2,2,100,0.1f);
-        
     }
 
     private void Update()
@@ -141,19 +137,64 @@ public class MachineLearningController : MonoBehaviour
 
     public void RunMachineLearningTestCase()
     {
-        double[] resultMLTestCase = MachineLearningTestCase.RunMachineLearningTestCase(useLinearModel, testCaseOption, epochs, learningRate, simulateTestCaseParameters);
+        double[] resultMLTestCase;
 
-        DisplayOutput(resultMLTestCase);
+        if (testCaseOption == TestCaseOption.USE_IMAGES && (images == null || images.Count == 0))
+        {
+            Debug.LogError("Images not loaded");
+        }
+
+        if (totalWantedImagesToTest == 0)
+        {
+            imagesToTest = null;
+        }
+        
+        TestCaseParameters param = MachineLearningTestCase.GetTestOption(testCaseOption, algoUsed);
+
+        if (testCaseOption == TestCaseOption.USE_IMAGES)
+        {
+            param.neuronsPerLayer[0] = nbPixelInImage;
+            param.neuronsPerLayer[param.neuronsPerLayer.Count - 1] = 1;
+            param.X = images;
+            param.Y = imageOutputs;
+            param.sampleSize = nbImagesLoaded;
+            param.gamma = (float)gamma;
+            param.nbCentroids = nbCentroid;
+        }
+
+        if (algoUsed == AlgoUsed.RBF)
+        {
+            resultMLTestCase = RBFController.TrainRBFodel(this, param, imagesToTest, nbImagesToTestLoaded);
+        }
+        else
+        {
+            resultMLTestCase = MachineLearningTestCase.RunMachineLearningTestCase(algoUsed == AlgoUsed.LINEAR, param, epochs, learningRate, simulateTestCaseParameters, algoUsed, imagesToTest, nbImagesToTestLoaded);
+        }
+
+        if (testCaseOption != TestCaseOption.USE_IMAGES && testCaseOption != TestCaseOption.IMAGES_TEST)
+        {
+            DisplayOutput(resultMLTestCase);
+        }
+        else
+        {
+            foreach (var data in resultMLTestCase)
+            {
+                Debug.Log(data < 0.1 ? "Druid" : "Paladin");
+            }
+        }
 
         simulateTestCaseParameters = null;
     }
 
     public void SimulateResultTest()
     {
-        simulateTestCaseParameters = MachineLearningTestCase.GetTestOption(testCaseOption);
+        simulateTestCaseParameters = MachineLearningTestCase.GetTestOption(testCaseOption, algoUsed);
         MachineLearningTestCase.lastTestCaseParameters = simulateTestCaseParameters;
 
-        InstantiateSpheresInScene(simulateTestCaseParameters.X, simulateTestCaseParameters.sampleSize, simulateTestCaseParameters.Y);
+        if (testCaseOption != TestCaseOption.IMAGES_TEST && testCaseOption != TestCaseOption.USE_IMAGES)
+        {
+            InstantiateSpheresInScene(simulateTestCaseParameters.X, simulateTestCaseParameters.sampleSize, simulateTestCaseParameters.Y);
+        }
     }
 
     public void InstantiateSpheresInScene(List<double> samples, int sampleSize, List<double> expectedOutputSimulation)
@@ -212,7 +253,8 @@ public class MachineLearningController : MonoBehaviour
         images?.Clear();
         imageOutputs?.Clear();
         nbPixelInImage = 0;
-        
+        nbImagesLoaded = 0;
+
         if (activateGameObjects == null)
         {
             return;

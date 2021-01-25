@@ -51,10 +51,10 @@ void RBF::TrainRBFWhole() {
 	vector<vector<double>> RBF_X_T = Utils::matT(RBF_X);
 	cout << "In train" << endl;
 	weights	= Utils::matDot(Utils::matDot(Utils::invert(Utils::matDot(RBF_X_T, RBF_X)), RBF_X_T), hot_tr_y);
-	cout << "In train " << testInputs.size() << " " << testOutputs.size() << endl;
-	cout << "In train " << testInputs[0][0] << " " << testOutputs[0] << endl;
-	accuracy = getAccuracy(testInputs, testOutputs, weights, centroids, gamma);
-	cout << "accuracy : " << accuracy << endl;
+	//cout << "In train " << testInputs.size() << " " << testOutputs.size() << endl;
+	//cout << "In train " << testInputs[0][0] << " " << testOutputs[0] << endl;
+	//accuracy = getAccuracy(testInputs, testOutputs, weights, centroids, gamma);
+	//cout << "accuracy : " << accuracy << endl;
 }
 
 double* RBF::trainWeights(){

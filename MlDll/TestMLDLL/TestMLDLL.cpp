@@ -10,7 +10,7 @@ extern "C"
 {
     __declspec(dllimport) double* train_linear_model(double* inputs, int inputsCount, double* outputs, int outputsCount, int sampleSize, int epochs, double learningRate);
     __declspec(dllimport) double* train_mlp_model(int* neuronsPerLayer, int nplSize, double* X, double* Y, int sampleSize, int epochs, double learningRate, bool isClassification);
-    __declspec(dllimport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroidTaMere, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila, float gamma);
+    __declspec(dllimport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroidTaMere, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila, float gamma, int outputsize);
 }
 
 int* neuronsPerLayer;
@@ -297,7 +297,7 @@ int main()
         result = train_linear_model(X, inputsCount, Y, outputsCount, sampleSize, epochs, learningRate);
 	}
 	else if (useRBF) {
-		result = train_rbf_model(X,sampleSize,xSeparation,Y,nbCentroids,nbClasses,epochs, Xtest,Ytest,gamma);
+		result = train_rbf_model(X,sampleSize,xSeparation,Y,nbCentroids,nbClasses,epochs, Xtest,Ytest,gamma, 5);
 	}
     else {
         result = train_mlp_model(neuronsPerLayer, nplSize, X, Y, sampleSize, epochs, learningRate, isClassification);

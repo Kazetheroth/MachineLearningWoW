@@ -108,7 +108,7 @@ extern "C" {
 	}
 
 	/* ====================== MLP ====================== */
-	__declspec(dllexport) double* train_mlp_model(int* neuronsPerLayer, int nplSize, double* X, double* Y, int sampleSize, int epochs, double learningRate, bool isClassification) {
+	__declspec(dllexport) double* train_mlp_model(int* neuronsPerLayer, int nplSize, double* X, double* Y, int sampleSize, int epochs, double learningRate, bool isClassification, double* imagesToTest, int outputSize) {
 		MLP* mlp = new MLP(neuronsPerLayer, nplSize);
 		double* result = new double[sampleSize * neuronsPerLayer[nplSize - 1]];
 
@@ -121,8 +121,8 @@ extern "C" {
 		mlp->train(X, Y, sampleSize, isClassification, epochs, learningRate);
 
 		cout << "AFTER TRAINING" << endl;
-		for (int k = 0; k < sampleSize; ++k) {
-			mlp->forwardPass(Utils::createVector(X, k * neuronsPerLayer[0], neuronsPerLayer[0] * (k + 1)), isClassification);
+		for (int k = 0; k < outputSize; ++k) {
+			mlp->forwardPass(Utils::createVector(imagesToTest, k * neuronsPerLayer[0], neuronsPerLayer[0] * (k + 1)), isClassification);
 			mlp->fillInputsResult(result, k);
 		}
 
@@ -130,7 +130,7 @@ extern "C" {
 	}
 	
 	/* ====================== RBF ====================== */
-	__declspec(dllexport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroidTaMere, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila, float gamma) {
+	__declspec(dllexport) double* train_rbf_model(double* X, int nbImages, int XSeparation, double* Y, int centroid, int maxClasses, int maxKMeans, double* XpetiteNuanceSurLaVariable, double* YEtVoila, float gamma, int outputSize) {
 		cout << "Hey" << endl;
 		vector<double> output;
 		vector<vector<double>> entries;
@@ -151,7 +151,7 @@ extern "C" {
 		vector<double> outputTest;
 		vector<vector<double>> entriesTest;
 
-		for (int i = 0; i < nbImages; ++i) {
+		for (int i = 0; i < outputSize; ++i) {
 			vector<double> pixels;
 			for (int j = 0; j < XSeparation; ++j) {
 				int index = (i * XSeparation) + j;
@@ -161,14 +161,14 @@ extern "C" {
 
 			entriesTest.push_back(pixels);
 
-			outputTest.push_back(YEtVoila[i]);
+			//outputTest.push_back(YEtVoila[i]);
 		}
 
-		RBF* rbf = new RBF(entries, centroidTaMere, maxClasses, maxKMeans, output, entriesTest, outputTest, gamma);
+		RBF* rbf = new RBF(entries, centroid, maxClasses, maxKMeans, output, entriesTest, outputTest, gamma);
 
 		rbf->TrainRBFWhole();
 
-		double* result = rbf->getResult(entriesTest,outputTest.size(),rbf->weights,rbf->centroids,gamma);
+		double* result = rbf->getResult(entriesTest, outputSize,rbf->weights,rbf->centroids,gamma);
 		
 		return result;
 	}
