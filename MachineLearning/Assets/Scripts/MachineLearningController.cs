@@ -44,6 +44,8 @@ public class MachineLearningController : MonoBehaviour
         imageOutputs = new List<double>();
         imagesToTest = new List<double>();
 
+        int defaultValue = testCaseOption == TestCaseOption.USE_IMAGES ? 0 : -1;
+
         Texture2D[] druids = Resources.LoadAll<Texture2D>("train/druid32x32");
         nbPixelInImage = druids[0].GetPixels().Length;
 
@@ -51,7 +53,7 @@ public class MachineLearningController : MonoBehaviour
         {
             if (nbImagesLoaded < totalWantedImages / 2)
             {
-                imageOutputs.Add(0);
+                imageOutputs.Add(defaultValue);
                 nbImagesLoaded++;
                 foreach (Color pixel in image.GetPixels())
                 {

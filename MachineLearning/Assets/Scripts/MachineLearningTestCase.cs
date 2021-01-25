@@ -333,7 +333,7 @@ public static class MachineLearningTestCase
             case TestCaseOption.USE_IMAGES:
                 return new TestCaseParameters
                 {
-                    neuronsPerLayer = new List<int> {2, 3, 1},
+                    neuronsPerLayer = new List<int> {2, 5, 1},
                     nplSize = 3,
                     sampleSize = 5,
                     isClassification = true,
@@ -368,7 +368,7 @@ public static class MachineLearningTestCase
             mlcInstance.InstantiateSpheresInScene(lastTestCaseParameters.X, lastTestCaseParameters.sampleSize, null);
         }
 
-        List<double> outputTest = outputToTest == null ? param.Y : outputToTest;
+        List<double> outputTest = outputToTest == null ? param.X : outputToTest;
         int outputTotalSize = outputToTest == null ? lastTestCaseParameters.sampleSize * lastTestCaseParameters.neuronsPerLayer[lastTestCaseParameters.nplSize - 1] : outputSize;
 
         double[] result = new double[outputTotalSize];
